@@ -1,0 +1,36 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "co.gov.cancilleria.miconsulado"
+    },
+    "jhipsterVersion": "6.0.1",
+    "applicationType": "monolith",
+    "baseName": "miconsuladogateway",
+    "packageName": "co.gov.cancilleria.miconsulado",
+    "packageFolder": "co/gov/cancilleria/miconsulado",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "no",
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": "eureka",
+    "buildTool": "maven",
+    "enableSwaggerCodegen": true,
+    "jwtSecretKey": "M2NhODA0Njc5YjZkOGFiODJhZDAyN2FjZmNmMTU2MDYxY2E4N2IyMjFhODBhNmVkNmE1Mzg5MTE1YzRkYzYxNTc4YTRlZDliMDk2OWMzNTRlYWRmZmM3MTM3MDM1MzE1M2M1NGRiZDQ4MzFjZjU4YTZkNGRlYTU5MDA3MjQ0MTM=",
+    "clientFramework": "react",
+    "clientTheme": "none",
+    "clientThemeVariant": "",
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false
+  }
+}
