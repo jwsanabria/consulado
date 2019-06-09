@@ -1,0 +1,37 @@
+{
+    "name": "Kanbam",
+    "fields": [
+        {
+            "fieldName": "size",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "state",
+            "fieldType": "State",
+            "fieldValues": "TO_DO,DOING,DONE"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "employee",
+            "otherEntityRelationshipName": "kanbam",
+            "relationshipName": "owner"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "task",
+            "otherEntityRelationshipName": "kanbam",
+            "relationshipName": "task"
+        }
+    ],
+    "changelogDate": "20190609154823",
+    "entityTableName": "kanbam",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}
