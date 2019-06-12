@@ -1,7 +1,7 @@
 version: '2'
 services:
   jenkins:
-    image: jenkins:latest
+    image: jenkins/jenkins:latest
     ports:
       - 49001:8080
       - 50000:50000
