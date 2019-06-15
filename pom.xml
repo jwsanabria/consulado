@@ -11,6 +11,17 @@
 
     <repositories>
         <!-- jhipster-needle-maven-repository -->
+        <repository>
+			<id>maven.gentics.com</id>
+			<name>Gentics Maven Repository</name>
+			<url>https://maven.gentics.com/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
     </repositories>
 
     <pluginRepositories>
@@ -87,6 +98,7 @@
         <junit.utReportFolder>${project.testresult.directory}/test</junit.utReportFolder>
         <junit.itReportFolder>${project.testresult.directory}/integrationTest</junit.itReportFolder>
         <!-- jhipster-needle-maven-property -->
+        <mesh.version>0.35.0</mesh.version>
     </properties>
 
     <dependencyManagement>
@@ -309,6 +321,11 @@
             <artifactId>metrics-core</artifactId>
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
+        <dependency>
+        	<groupId>com.gentics.mesh</groupId>
+        	<artifactId>mesh-rest-client</artifactId>
+        	<version>${mesh.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
