@@ -30,7 +30,7 @@ public class RestClientCMS {
 		client.setLogin("admin", "admin");
 		client.login().ignoreElement().blockingAwait();
 
-		NodeListResponse| nodes = client.findNodes("miconsulado", new NodeParametersImpl().setLanguages("en")).blockingGet();
+		NodeListResponse nodes = client.findNodes("miconsulado", new NodeParametersImpl().setLanguages("en")).blockingGet();
 		for (NodeResponse nodeResponse : nodes.getData()) {
 			System.out.println(nodeResponse.getUuid());
 			System.out.println(nodeResponse.getFields().getStringField("name").getString());
