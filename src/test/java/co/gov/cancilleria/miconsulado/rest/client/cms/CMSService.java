@@ -28,7 +28,6 @@ class CMSService {
 		NodeListResponse info = restClient.callAllInfoCms();
 		assertThat(info).isNotNull();
 		assertThat(info.getData()).isNotNull();
-		
 	}
 
 }

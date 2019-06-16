@@ -2,7 +2,8 @@ package co.gov.cancilleria.miconsulado;
 
 import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
 import co.gov.cancilleria.miconsulado.config.DefaultProfileUtil;
-
+import co.gov.cancilleria.miconsulado.service.impl.KanbamServiceImpl;
+import co.gov.cancilleria.miconsulado.service.mapper.KanbamMapper;
 import io.github.jhipster.config.JHipsterConstants;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,11 +37,7 @@ public class MiconsuladogatewayApp implements InitializingBean {
         this.env = env;
     }
     
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
+    
     /**
      * Initializes miconsuladogateway.
      * <p>
