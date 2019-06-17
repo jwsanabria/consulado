@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.gentics.mesh.core.rest.navigation.NavigationResponse;
 import com.gentics.mesh.core.rest.node.NodeListResponse;
+import com.gentics.mesh.parameter.ParameterProvider;
+import com.gentics.mesh.parameter.client.NavigationParametersImpl;
 import com.gentics.mesh.parameter.client.NodeParametersImpl;
 import com.gentics.mesh.rest.client.MeshRestClient;
 
@@ -21,7 +23,7 @@ public class CmsServiceImpl implements CmsService{
 		client.setLogin("admin", "admin");
 		client.login().ignoreElement().blockingAwait();
 		
-    	NavigationResponse nav = client.navroot("miconsulado", "/", null).blockingGet();
+    	NavigationResponse nav = client.navroot("miconsulado", "/", new  NavigationParametersImpl().setMaxDepth(20)).blockingGet();
     	return nav;
     }
 

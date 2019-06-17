@@ -27,6 +27,17 @@ public class CmsResource {
     public String getAllCmsNodes(){
         return cmsService.getAllCmsNodes();
     }
+    
+    
+    /**
+     * Metodo que devuelve la navegacion desde miconsulado
+     * @return
+     */
+    @GetMapping("/navigation")
+    public String getNavRootCms(){
+        return cmsService.getCmsNavRoot();
+    }
+
 
 }
 

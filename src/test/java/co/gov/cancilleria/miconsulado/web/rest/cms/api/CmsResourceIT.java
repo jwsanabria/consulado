@@ -29,7 +29,15 @@ class CmsResourceIT {
 	void testGetAllCmsNodes() {
 		String response=cmsResource.getAllCmsNodes();
 		assertThat(response).isNotNull();
-		System.out.println(response);
+		//System.out.println(response);
+	}
+	
+	
+	@Test
+	void testGetNavRootCms() {
+		String response=cmsResource.getNavRootCms();
+		assertThat(response).isNotNull();
+		//System.out.println(response);
 	}
 
 }
