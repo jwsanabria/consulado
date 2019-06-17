@@ -9,17 +9,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/cmsapi")
-public class CmsApi {
+public class CmsResource {
 
 
-    @Autowired
-    CmsService cmsService;
+    
+    private final CmsService cmsService;
+    
+    CmsResource(CmsService cmsService){
+    	this.cmsService = cmsService;
+    }
 
     /**
      * Metodo que devuelve la cadena completa de nodos del CMS
      * @return
      */
-
     @GetMapping("/nodes")
     public String getAllCmsNodes(){
         return cmsService.getAllCmsNodes();
