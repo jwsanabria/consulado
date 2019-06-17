@@ -9,10 +9,9 @@ import com.gentics.mesh.parameter.client.NodeParametersImpl;
 import com.gentics.mesh.rest.client.MeshRestClient;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Service
 public class RestClientCMS {
 	
-	public NodeListResponse callAllInfoCms() {
+	public NodeListResponse getAllCmsNodes() {
 		MeshRestClient client = MeshRestClient.create("vps206188.vps.ovh.ca", 8080, false);
 		client.setLogin("admin", "admin");
 		client.login().ignoreElement().blockingAwait();

@@ -25,7 +25,7 @@ class CMSService {
 
 	@Test
 	void testCallCMSService() {
-		NodeListResponse info = restClient.callAllInfoCms();
+		NodeListResponse info = restClient.getAllCmsNodes();
 		assertThat(info).isNotNull();
 		assertThat(info.getData()).isNotNull();
 	}
