@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/cmsapi")
 public class CmsResource {
@@ -35,7 +37,7 @@ public class CmsResource {
      * @return
      */
     @GetMapping("/navigation")
-    public String getNavRootCms() throws JSONException {
+    public String getNavRootCms() throws JSONException, IOException {
         return cmsService.getCmsNavRoot();
     }
 

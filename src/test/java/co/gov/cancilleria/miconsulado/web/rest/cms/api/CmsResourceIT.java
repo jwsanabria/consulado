@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
 import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = MiconsuladogatewayApp.class)
@@ -35,7 +37,7 @@ class CmsResourceIT {
 	
 	
 	@Test
-	void testGetNavRootCms() throws JSONException {
+	void testGetNavRootCms() throws JSONException, IOException {
 		String response=cmsResource.getNavRootCms();
 		assertThat(response).isNotNull();
 		//System.out.println(response);

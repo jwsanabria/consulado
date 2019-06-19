@@ -13,6 +13,8 @@ import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
 import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 import co.gov.cancilleria.miconsulado.service.cms.impl.CmsServiceImpl;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -35,7 +37,7 @@ class CMSServiceIT {
 	}*/
 	
 	@Test
-	void testNavigationRootCMSService() throws JSONException {
+	void testNavigationRootCMSService() throws JSONException, IOException {
 		String info = restClient.getCmsNavRoot();
 		assertThat(info).isNotNull();
 		System.out.println(info);

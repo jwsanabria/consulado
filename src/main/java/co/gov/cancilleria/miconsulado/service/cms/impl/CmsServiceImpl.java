@@ -13,12 +13,18 @@ import com.gentics.mesh.core.rest.node.field.list.impl.StringFieldListImpl;
 import com.gentics.mesh.parameter.LinkType;
 import com.gentics.mesh.parameter.client.NavigationParametersImpl;
 import com.gentics.mesh.parameter.client.NodeParametersImpl;
+import com.gentics.mesh.rest.client.MeshBinaryResponse;
+import com.gentics.mesh.rest.client.MeshRequest;
 import com.gentics.mesh.rest.client.MeshRestClient;
+import org.apache.commons.io.IOUtils;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,7 +34,7 @@ import java.util.List;
 public class CmsServiceImpl implements CmsService {
 
 
-    private String getNavRoot() throws JSONException {
+    private String getNavRoot() throws JSONException, IOException {
         MeshRestClient client = MeshRestClient.create("vps206188.vps.ovh.ca", 8080, false);
         client.setLogin("admin", "admin");
         client.login().ignoreElement().blockingAwait();
@@ -58,30 +64,31 @@ public class CmsServiceImpl implements CmsService {
                     // MeshWebrootResponse images = client.webroot("miconsulado","/Recursos/Imagenes/imagen[0]",new NodeParametersImpl().setResolveLinks(LinkType.FULL)).blockingGet();;
                     NodeListResponse nodes = client.findNodes("miconsulado", new NodeParametersImpl().setResolveLinks(LinkType.SHORT).setLanguages("en")).blockingGet();
 
-                    for (NodeResponse nodeResponse : nodes.getData()) {
+                    for (NodeResponse nodeResponse : nodes.getData())
+                        if (nodeResponse.getPath().contains("/Recursos/Imagenes/")) {
+                            JSONObject imgObjJson = new JSONObject();
+                            FieldMap fieldImageMap = nodeResponse.getFields();
+                            Collection<String> mapKeys = fieldImageMap.keySet();
+                            for (String key : mapKeys) {
+                                if (key.equals("imagen")) {
 
-                      if(nodeResponse.getPath().contains("/Recursos/Imagenes/")){
-                          JSONObject imgObjJson = new JSONObject();
-                          FieldMap fieldImageMap = nodeResponse.getFields();
-                          Collection<String> mapKeys = fieldImageMap.keySet();
-                          for (String key : mapKeys) {
+                                    BinaryField imagen = fieldImageMap.getBinaryField(key);
+                                    System.out.println(imagen.getBinaryUuid());
+                                    imgObjJson.put("uuid", imagen.getBinaryUuid());
 
-                              if(key.equals("imagen")){
+                                    MeshBinaryResponse binary =  client.downloadBinaryField("miconsulado", nodeResponse.getUuid(), null,"imagen", new NodeParametersImpl().setLanguages("en")).blockingGet();
+                                    byte[] bytes = IOUtils.toByteArray(binary.getStream());
 
-                                  BinaryField imagen = fieldImageMap.getBinaryField(key);
-                                  System.out.println(imagen.getBinaryUuid());
-                                  imgObjJson.put("uuid",imagen.getBinaryUuid());
-
-                                  imgObjJson.put("base64",imagen.getBinaryUuid());
-                              }else {
-                                  imgObjJson.put(key,fieldImageMap.getStringField(key));
-                              }
-                          }
-                          resourceArrayJson.put(imgObjJson);
+                                    Base64.Encoder encoder = Base64.getEncoder();
+                                    String imagenEncode = encoder.encodeToString(bytes);
+                                    imgObjJson.put("base64", "data:"+binary.getContentType()+";base64,"+imagenEncode);
+                                } else {
+                                    imgObjJson.put(key, fieldImageMap.getStringField(key));
+                                }
+                                resourceArrayJson.put(imgObjJson);
+                            }
 
                         }
-
-                    }
 
 
                     System.out.println(nodes.toJson());
@@ -175,7 +182,7 @@ public class CmsServiceImpl implements CmsService {
         return cmsNodes.toJson();
     }
 
-    public String getCmsNavRoot() throws JSONException {
+    public String getCmsNavRoot() throws JSONException, IOException {
         //NavigationResponse cmsNavigation = this.getNavRoot();
         return this.getNavRoot();
     }
