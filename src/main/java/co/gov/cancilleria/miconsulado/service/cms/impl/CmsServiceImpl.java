@@ -14,7 +14,6 @@ import com.gentics.mesh.parameter.LinkType;
 import com.gentics.mesh.parameter.client.NavigationParametersImpl;
 import com.gentics.mesh.parameter.client.NodeParametersImpl;
 import com.gentics.mesh.rest.client.MeshBinaryResponse;
-import com.gentics.mesh.rest.client.MeshRequest;
 import com.gentics.mesh.rest.client.MeshRestClient;
 import org.apache.commons.io.IOUtils;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
@@ -23,7 +22,6 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
@@ -38,6 +36,9 @@ public class CmsServiceImpl implements CmsService {
         MeshRestClient client = MeshRestClient.create("vps206188.vps.ovh.ca", 8080, false);
         client.setLogin("admin", "admin");
         client.login().ignoreElement().blockingAwait();
+
+        //Consulta el CMS
+
         NavigationResponse nav = client.navroot("miconsulado", "/", new NavigationParametersImpl().setMaxDepth(20)).blockingGet();
 
         List<NavigationElement> navigationElementList = nav.getChildren();
@@ -53,15 +54,13 @@ public class CmsServiceImpl implements CmsService {
             JSONArray arrayJson = new JSONArray();
 
             if (navElem.getNode().getDisplayName().equalsIgnoreCase("Recursos")) {
+
                 List<NavigationElement> childsResourceList = navElem.getChildren();
 
                 for (NavigationElement resourceChild : childsResourceList) {
                     JSONObject objectJson = new JSONObject();
                     JSONArray resourceArrayJson = new JSONArray();
 
-                    // NodeResponse node = client.findNodeByUuid("miconsulado",resourceChild.getNode().getUuid(),new NodeParametersImpl().setResolveLinks(LinkType.FULL).setLanguages("en")).blockingGet();
-
-                    // MeshWebrootResponse images = client.webroot("miconsulado","/Recursos/Imagenes/imagen[0]",new NodeParametersImpl().setResolveLinks(LinkType.FULL)).blockingGet();;
                     NodeListResponse nodes = client.findNodes("miconsulado", new NodeParametersImpl().setResolveLinks(LinkType.SHORT).setLanguages("en")).blockingGet();
 
                     for (NodeResponse nodeResponse : nodes.getData())
@@ -71,17 +70,13 @@ public class CmsServiceImpl implements CmsService {
                             Collection<String> mapKeys = fieldImageMap.keySet();
                             for (String key : mapKeys) {
                                 if (key.equals("imagen")) {
-
                                     BinaryField imagen = fieldImageMap.getBinaryField(key);
-                                    System.out.println(imagen.getBinaryUuid());
-                                    imgObjJson.put("uuid", imagen.getBinaryUuid());
-
-                                    MeshBinaryResponse binary =  client.downloadBinaryField("miconsulado", nodeResponse.getUuid(), null,"imagen", new NodeParametersImpl().setLanguages("en")).blockingGet();
+                                    imgObjJson.put("uuid", nodeResponse.getUuid());
+                                    MeshBinaryResponse binary = client.downloadBinaryField("miconsulado", nodeResponse.getUuid(), null, "imagen", new NodeParametersImpl().setLanguages("en")).blockingGet();
                                     byte[] bytes = IOUtils.toByteArray(binary.getStream());
-
                                     Base64.Encoder encoder = Base64.getEncoder();
                                     String imagenEncode = encoder.encodeToString(bytes);
-                                    imgObjJson.put("base64", "data:"+binary.getContentType()+";base64,"+imagenEncode);
+                                    imgObjJson.put("base64", "data:" + binary.getContentType() + ";base64," + imagenEncode);
                                 } else {
                                     imgObjJson.put(key, fieldImageMap.getStringField(key));
                                 }
@@ -91,17 +86,18 @@ public class CmsServiceImpl implements CmsService {
                         }
 
 
-                    System.out.println(nodes.toJson());
+
                     //Se mapean los atributos de los recursos.
+                    //System.out.println(nodes.toJson());
+
 
 
                     objectJson.put(resourceChild.getNode().getDisplayName(), resourceArrayJson);
-
                     arrayJson.put(objectJson);
 
                 }
 
-            } else if (navElem.getNode().getDisplayName().equalsIgnoreCase("Procedimientos")) {
+            } else if (navElem.getNode().getDisplayName().equalsIgnoreCase("Contenido")) {
 
                 List<NavigationElement> childsProcedureList = navElem.getChildren();
                 for (NavigationElement procedureChild : childsProcedureList) {
