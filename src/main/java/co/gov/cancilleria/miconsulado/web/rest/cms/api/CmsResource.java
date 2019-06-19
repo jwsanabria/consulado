@@ -2,6 +2,7 @@ package co.gov.cancilleria.miconsulado.web.rest.cms.api;
 
 import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +35,7 @@ public class CmsResource {
      * @return
      */
     @GetMapping("/navigation")
-    public String getNavRootCms(){
+    public String getNavRootCms() throws JSONException {
         return cmsService.getCmsNavRoot();
     }
 

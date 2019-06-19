@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -34,7 +35,7 @@ class CmsResourceIT {
 	
 	
 	@Test
-	void testGetNavRootCms() {
+	void testGetNavRootCms() throws JSONException {
 		String response=cmsResource.getNavRootCms();
 		assertThat(response).isNotNull();
 		//System.out.println(response);

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.gentics.mesh.core.rest.node.NodeListResponse;
@@ -26,15 +27,15 @@ class CMSServiceIT {
         restClient = new CmsServiceImpl();
 	}
 
-	@Test
+/*	@Test
 	void testCallCMSService() {
 		String info = restClient.getAllCmsNodes();
 		assertThat(info).isNotNull();
 		//assertThat(info.getData()).isNotNull();
-	}
+	}*/
 	
 	@Test
-	void testNavigationRootCMSService() {
+	void testNavigationRootCMSService() throws JSONException {
 		String info = restClient.getCmsNavRoot();
 		assertThat(info).isNotNull();
 		System.out.println(info);
