@@ -9,7 +9,6 @@ import com.gentics.mesh.core.rest.node.NodeListResponse;
 import com.gentics.mesh.core.rest.node.NodeResponse;
 import com.gentics.mesh.core.rest.node.field.BinaryField;
 import com.gentics.mesh.core.rest.node.field.NodeField;
-import com.gentics.mesh.core.rest.node.field.list.impl.StringFieldListImpl;
 import com.gentics.mesh.parameter.LinkType;
 import com.gentics.mesh.parameter.client.NavigationParametersImpl;
 import com.gentics.mesh.parameter.client.NodeParametersImpl;
@@ -33,9 +32,11 @@ public class CmsServiceImpl implements CmsService {
 
 
     private String getNavRoot() throws JSONException, IOException {
-        MeshRestClient client = MeshRestClient.create("vps206188.vps.ovh.ca", 8080, false);
+        MeshRestClient client = MeshRestClient.create("181.54.250.101", 8080, false);
         client.setLogin("admin", "admin");
         client.login().ignoreElement().blockingAwait();
+
+        // -- http://8a81a152.ngrok.io/
 
         //Consulta el CMS
 
@@ -51,10 +52,14 @@ public class CmsServiceImpl implements CmsService {
 
 
         for (NavigationElement navElem : navigationElementList) {
+            System.out.println("Elemento : " + navElem.getNode().getDisplayName());
+
+            String nodoBase = "";
             JSONArray arrayJson = new JSONArray();
 
             if (navElem.getNode().getDisplayName().equalsIgnoreCase("Recursos")) {
 
+                nodoBase = navElem.getNode().getDisplayName();
                 List<NavigationElement> childsResourceList = navElem.getChildren();
 
                 for (NavigationElement resourceChild : childsResourceList) {
@@ -63,7 +68,8 @@ public class CmsServiceImpl implements CmsService {
 
                     NodeListResponse nodes = client.findNodes("miconsulado", new NodeParametersImpl().setResolveLinks(LinkType.SHORT).setLanguages("en")).blockingGet();
 
-                    for (NodeResponse nodeResponse : nodes.getData())
+                    for (NodeResponse nodeResponse : nodes.getData()) {
+
                         if (nodeResponse.getPath().contains("/Recursos/Imagenes/")) {
                             JSONObject imgObjJson = new JSONObject();
                             FieldMap fieldImageMap = nodeResponse.getFields();
@@ -85,11 +91,10 @@ public class CmsServiceImpl implements CmsService {
 
                         }
 
-
+                    }
 
                     //Se mapean los atributos de los recursos.
                     //System.out.println(nodes.toJson());
-
 
 
                     objectJson.put(resourceChild.getNode().getDisplayName(), resourceArrayJson);
@@ -98,7 +103,7 @@ public class CmsServiceImpl implements CmsService {
                 }
 
             } else if (navElem.getNode().getDisplayName().equalsIgnoreCase("Contenido")) {
-
+                nodoBase = "Procedimientos";
                 List<NavigationElement> childsProcedureList = navElem.getChildren();
                 for (NavigationElement procedureChild : childsProcedureList) {
                     JSONObject objectJson = new JSONObject();
@@ -120,8 +125,8 @@ public class CmsServiceImpl implements CmsService {
                             componenteJson.put(key, icon.getUuid());
 
                         } else if (key.equals("ordenContenido")) {
-                            StringFieldListImpl list = fieldMap.getStringFieldList(key);
-                            componenteJson.put(key, list.getItems());
+                            //       StringFieldListImpl list = fieldMap.getStringFieldList(key);
+                            //      componenteJson.put(key, list.getItems());
 
                         } else {
                             componenteJson.put(key, fieldMap.getStringField(key));
@@ -143,7 +148,7 @@ public class CmsServiceImpl implements CmsService {
 
 
             //Mapea  los child en la nueva estructura
-            structureFrontJson.put(navElem.getNode().getDisplayName(), arrayJson);
+            structureFrontJson.put(nodoBase, arrayJson);
 
             //System.out.println("Nodo : "+navElem.getNode().getDisplayName());
         }
