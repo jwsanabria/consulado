@@ -9,7 +9,9 @@ import com.gentics.mesh.core.rest.node.NodeListResponse;
 import com.gentics.mesh.core.rest.node.NodeResponse;
 import com.gentics.mesh.core.rest.node.field.BinaryField;
 import com.gentics.mesh.core.rest.node.field.NodeField;
-import com.gentics.mesh.parameter.LinkType;
+import com.gentics.mesh.core.rest.node.field.NodeFieldListItem;
+import com.gentics.mesh.core.rest.node.field.list.NodeFieldList;
+import com.gentics.mesh.core.rest.node.field.list.impl.StringFieldListImpl;
 import com.gentics.mesh.parameter.client.NavigationParametersImpl;
 import com.gentics.mesh.parameter.client.NodeParametersImpl;
 import com.gentics.mesh.rest.client.MeshBinaryResponse;
@@ -22,17 +24,18 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CmsServiceImpl implements CmsService {
 
+    private JSONArray arrayProceduresJson = new JSONArray();
 
     private String getNavRoot() throws JSONException, IOException {
-        MeshRestClient client = MeshRestClient.create("181.54.250.101", 8080, false);
+        MeshRestClient client = MeshRestClient.create("vps206188.vps.ovh.ca", 8080, false);
         client.setLogin("admin", "admin");
         client.login().ignoreElement().blockingAwait();
 
@@ -40,124 +43,201 @@ public class CmsServiceImpl implements CmsService {
 
         //Consulta el CMS
 
-        NavigationResponse nav = client.navroot("miconsulado", "/", new NavigationParametersImpl().setMaxDepth(20)).blockingGet();
+        NavigationResponse navRoot = client.navroot("miConsulado", "/", new NavigationParametersImpl().setMaxDepth(20)).blockingGet();
 
-        List<NavigationElement> navigationElementList = nav.getChildren();
+
+        List<NavigationElement> navigationElementList = navRoot.getChildren();
         System.out.println("size : " + navigationElementList.size());
 
         //Estructura para el Front-End
         JSONObject structureFrontJson = new JSONObject();
 
-        //Se itera sobre los hijos de la cadena grande
+
+        for (NavigationElement navRootElement : navigationElementList) {
+
+            System.out.println("Elemento - Root : " + navRootElement.getNode().getDisplayName() + " - uuid : " + navRootElement.getNode().getUuid());
 
 
-        for (NavigationElement navElem : navigationElementList) {
-            System.out.println("Elemento : " + navElem.getNode().getDisplayName());
+            if (navRootElement.getNode().getDisplayName().toLowerCase().equals("recursos")) {
 
-            String nodoBase = "";
-            JSONArray arrayJson = new JSONArray();
+                //Objeto de Recursos
+                JSONObject objectRootJson = new JSONObject();
 
-            if (navElem.getNode().getDisplayName().equalsIgnoreCase("Recursos")) {
+                //Se iteran los Recursos
+                NodeListResponse nodesResources = this.getChildNode(navRootElement.getNode().getUuid());
 
-                nodoBase = navElem.getNode().getDisplayName();
-                List<NavigationElement> childsResourceList = navElem.getChildren();
+                //Imagenes y Colores
+                for (NodeResponse nodeResource : nodesResources.getData()) {
 
-                for (NavigationElement resourceChild : childsResourceList) {
-                    JSONObject objectJson = new JSONObject();
-                    JSONArray resourceArrayJson = new JSONArray();
+                    System.out.println("***** Recurso : " + nodeResource.getDisplayName() + " - uuid : " + nodeResource.getUuid());
+                    JSONObject objectResource = new JSONObject();
 
-                    NodeListResponse nodes = client.findNodes("miconsulado", new NodeParametersImpl().setResolveLinks(LinkType.SHORT).setLanguages("en")).blockingGet();
+                    NodeListResponse nodesResourceItems = this.getChildNode(nodeResource.getUuid());
 
-                    for (NodeResponse nodeResponse : nodes.getData()) {
+                    //Se iteran todos los items de los recursos
+                    for (NodeResponse nodeResourceItem : nodesResourceItems.getData()) {
 
-                        if (nodeResponse.getPath().contains("/Recursos/Imagenes/")) {
-                            JSONObject imgObjJson = new JSONObject();
-                            FieldMap fieldImageMap = nodeResponse.getFields();
-                            Collection<String> mapKeys = fieldImageMap.keySet();
-                            for (String key : mapKeys) {
-                                if (key.equals("imagen")) {
-                                    BinaryField imagen = fieldImageMap.getBinaryField(key);
-                                    imgObjJson.put("uuid", nodeResponse.getUuid());
-                                    MeshBinaryResponse binary = client.downloadBinaryField("miconsulado", nodeResponse.getUuid(), null, "imagen", new NodeParametersImpl().setLanguages("en")).blockingGet();
-                                    byte[] bytes = IOUtils.toByteArray(binary.getStream());
-                                    Base64.Encoder encoder = Base64.getEncoder();
-                                    String imagenEncode = encoder.encodeToString(bytes);
-                                    imgObjJson.put("base64", "data:" + binary.getContentType() + ";base64," + imagenEncode);
-                                } else {
-                                    imgObjJson.put(key, fieldImageMap.getStringField(key));
-                                }
-                                resourceArrayJson.put(imgObjJson);
+                        System.out.println("************ Item Recurso : " + nodeResourceItem.getDisplayName() + " - uuid : " + nodeResourceItem.getUuid());
+
+                        JSONObject objectResourceItem = new JSONObject();
+
+                        // Se incorpora el UUID
+                        objectResourceItem.put("uuid", nodeResourceItem.getUuid());
+
+                        //Se sacan los Campos de los items de los Recursos
+                        FieldMap fieldsMap = nodeResourceItem.getFields();
+                        for (String key : fieldsMap.keySet()) {
+                            if (key.equals("imagen")) {
+                                BinaryField imagen = fieldsMap.getBinaryField(key);
+                                objectResourceItem.put("uuid", nodeResourceItem.getUuid());
+                                MeshBinaryResponse binary = client.downloadBinaryField("miConsulado", nodeResourceItem.getUuid(), null, "imagen", new NodeParametersImpl().setLanguages("en")).blockingGet();
+                                byte[] bytes = IOUtils.toByteArray(binary.getStream());
+                                Base64.Encoder encoder = Base64.getEncoder();
+                                String imagenEncode = encoder.encodeToString(bytes);
+                                objectResourceItem.put("base64", "data:" + binary.getContentType() + ";base64," + imagenEncode);
+
+                            } else {
+                                //Demas Campos diferentes a Imagen
+                                objectResourceItem.put(key, fieldsMap.getStringField(key));
                             }
 
                         }
 
-                    }
-
-                    //Se mapean los atributos de los recursos.
-                    //System.out.println(nodes.toJson());
-
-
-                    objectJson.put(resourceChild.getNode().getDisplayName(), resourceArrayJson);
-                    arrayJson.put(objectJson);
-
-                }
-
-            } else if (navElem.getNode().getDisplayName().equalsIgnoreCase("Contenido")) {
-                nodoBase = "Procedimientos";
-                List<NavigationElement> childsProcedureList = navElem.getChildren();
-                for (NavigationElement procedureChild : childsProcedureList) {
-                    JSONObject objectJson = new JSONObject();
-                    //Objeto General Procedimientos
-
-                    objectJson.put("nombre", procedureChild.getNode().getDisplayName());
-                    objectJson.put("uuid", procedureChild.getNode().getUuid());
-
-                    //componentes - Fields del Procedimiento
-                    JSONArray resourceArrayJson = new JSONArray();
-
-                    JSONObject componenteJson = new JSONObject();
-                    FieldMap fieldMap = procedureChild.getNode().getFields();
-                    Collection<String> mapKeys = fieldMap.keySet();
-                    for (String key : mapKeys) {
-
-                        if (key.equals("icono")) {
-                            NodeField icon = fieldMap.getNodeField(key);
-                            componenteJson.put(key, icon.getUuid());
-
-                        } else if (key.equals("ordenContenido")) {
-                            //       StringFieldListImpl list = fieldMap.getStringFieldList(key);
-                            //      componenteJson.put(key, list.getItems());
-
-                        } else {
-                            componenteJson.put(key, fieldMap.getStringField(key));
-                        }
+                        objectResource.accumulate(nodeResource.getDisplayName().toLowerCase(), objectResourceItem);
 
                     }
 
-                    resourceArrayJson.put(componenteJson);
-                    objectJson.put("componentes", resourceArrayJson);
-
-                    // -----------------------------------------------------------------
-
-
-                    arrayJson.put(objectJson);
+                    structureFrontJson.accumulate(navRootElement.getNode().getDisplayName().toLowerCase(), objectResource);
                 }
+
+
+            } else if (navRootElement.getNode().getDisplayName().toLowerCase().equals("contenido")) {
+
+                System.out.println("Procedimiento - Root : " + navRootElement.getNode().getDisplayName() + " - uuid : " + navRootElement.getNode().getUuid());
+
+                //Se iteran los procedimientos
+                NodeListResponse nodesProcedure = this.getChildNode(navRootElement.getNode().getUuid());
+
+                //Procedimientos
+                for (NodeResponse nodeProcedure : nodesProcedure.getData()) {
+
+                    //structureFrontJson = buildProcedure(nodeProcedure, structureFrontJson);
+                    buildProcedures(nodeProcedure);
+                    structureFrontJson.accumulate("procedimientos", arrayProceduresJson);
+
+                }
+
+
+            } else {
+                // Se verifica tratamiento
+            }
+
+
+        }
+
+
+        //System.out.println(structureFrontJson.toString());
+        //System.out.println("Estructura Completa : "+nav.toJson());
+
+        return structureFrontJson.toString();
+    }
+
+
+    private void buildProcedures(NodeResponse nodeProcedure) throws JSONException {
+
+        JSONObject procedureObject = new JSONObject();
+
+        //---Datos Generales
+        procedureObject.put("uuid", nodeProcedure.getUuid());
+        procedureObject.put("nombre", nodeProcedure.getDisplayName());
+
+        //--Componente
+        procedureObject.put("componentes", buildComponents(nodeProcedure));
+        arrayProceduresJson.put(procedureObject);
+
+    }
+
+
+    private JSONArray buildComponents(NodeResponse nodeProcedure) throws JSONException {
+
+
+        JSONArray arrayComponentJson = new JSONArray();
+        //----Componentes
+
+        JSONObject components = new JSONObject();
+        NodeListResponse nodesComponents = this.getChildNode(nodeProcedure.getUuid());
+        for (NodeResponse nodeComponent : nodesComponents.getData()) {
+            JSONObject componentObject = new JSONObject();
+            Boolean flag = Boolean.TRUE;
+
+            componentObject.put("uuid", nodeComponent.getUuid());
+            componentObject.put("tipoEsquema", nodeComponent.getSchema().getName());
+            if(nodeComponent.getSchema().getName().equals("itemMenu")){
+                componentObject.put("uuidVista", nodeComponent.getUuid());
+                //Se crea un Identificador
+                componentObject.put("uuid", UUID.randomUUID().toString().replaceAll("-", ""));
+            }
+
+            FieldMap fieldsMap = nodeComponent.getFields();
+            for (String key : fieldsMap.keySet()) {
+                if (key.equals("colorFondo")) {
+                    NodeField nodeColorFondo = fieldsMap.getNodeField(key);
+                    JSONObject fondoObject = new JSONObject();
+                    fondoObject.put("uuid", nodeColorFondo.getUuid());
+                    componentObject.put(key, fondoObject);
+
+                } else if (key.equals("icono")) {
+                    NodeField icon = fieldsMap.getNodeField(key);
+                    componentObject.put(key, icon.getUuid());
+
+                } else if (key.equals("ordenComponentes")) {
+                    NodeFieldList listNode = fieldsMap.getNodeFieldList(key);
+
+                    JSONArray arrayOrder= new JSONArray();
+                    for(NodeFieldListItem nodeOrder : listNode.getItems()){
+                        arrayOrder.put(nodeOrder.getUuid());
+                    }
+
+                   componentObject.put(key, arrayOrder);
+
+                } else {
+                    componentObject.put(key, fieldsMap.getStringField(key));
+                    if(fieldsMap.getStringField(key).getString().equals("acordeon")){
+                        componentObject.put("componentes",buildComponents(nodeComponent)) ;
+                        flag = Boolean.FALSE;
+                    }
+                }
+
+
+
 
 
             }
 
+            arrayComponentJson.put(componentObject);
 
-            //Mapea  los child en la nueva estructura
-            structureFrontJson.put(nodoBase, arrayJson);
+            if (!nodeComponent.getChildrenInfo().isEmpty() && flag) {
+                System.out.println("Tiene Hijos" + nodeComponent.getChildrenInfo().keySet());
+                buildProcedures(nodeComponent);
 
-            //System.out.println("Nodo : "+navElem.getNode().getDisplayName());
+            }
+
         }
 
-        //System.out.println(structureFrontJson.toString());
 
-        //System.out.println("Estructura Completa : "+nav.toJson());
+        return arrayComponentJson;
+    }
 
-        return structureFrontJson.toString();
+
+    private NodeListResponse getChildNode(String uuid) {
+
+        MeshRestClient client = MeshRestClient.create("vps206188.vps.ovh.ca", 8080, false);
+        client.setLogin("admin", "admin");
+        client.login().ignoreElement().blockingAwait();
+        NodeListResponse childNodesList = client.findNodeChildren("miConsulado", uuid, new NodeParametersImpl().setLanguages("en")).blockingGet();
+
+        return childNodesList;
+
     }
 
 
@@ -167,7 +247,7 @@ public class CmsServiceImpl implements CmsService {
         client.login().ignoreElement().blockingAwait();
 
 
-        NodeListResponse nodes = client.findNodes("miconsulado", new NodeParametersImpl().setLanguages("en")).blockingGet();
+        NodeListResponse nodes = client.findNodes("miConsulado", new NodeParametersImpl().setLanguages("en")).blockingGet();
 		/*for (NodeResponse nodeResponse : nodes.getData()) {
 			System.out.println(nodeResponse.getUuid());
 			System.out.println(nodeResponse.getFields().getStringField("name").getString());
