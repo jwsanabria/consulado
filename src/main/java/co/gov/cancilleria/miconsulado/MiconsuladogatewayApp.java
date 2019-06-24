@@ -1,6 +1,7 @@
 package co.gov.cancilleria.miconsulado;
 
 import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
+import co.gov.cancilleria.miconsulado.config.CmsProperties;
 import co.gov.cancilleria.miconsulado.config.DefaultProfileUtil;
 import co.gov.cancilleria.miconsulado.service.impl.KanbamServiceImpl;
 import co.gov.cancilleria.miconsulado.service.mapper.KanbamMapper;

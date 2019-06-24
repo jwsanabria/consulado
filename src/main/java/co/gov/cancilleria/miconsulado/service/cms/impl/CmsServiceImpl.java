@@ -1,6 +1,19 @@
 package co.gov.cancilleria.miconsulado.service.cms.impl;
 
-import co.gov.cancilleria.miconsulado.service.cms.CmsService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.gentics.mesh.core.rest.navigation.NavigationElement;
 import com.gentics.mesh.core.rest.navigation.NavigationResponse;
@@ -11,39 +24,51 @@ import com.gentics.mesh.core.rest.node.field.BinaryField;
 import com.gentics.mesh.core.rest.node.field.NodeField;
 import com.gentics.mesh.core.rest.node.field.NodeFieldListItem;
 import com.gentics.mesh.core.rest.node.field.list.NodeFieldList;
-import com.gentics.mesh.core.rest.node.field.list.impl.StringFieldListImpl;
+import com.gentics.mesh.parameter.ParameterProvider;
 import com.gentics.mesh.parameter.client.NavigationParametersImpl;
 import com.gentics.mesh.parameter.client.NodeParametersImpl;
 import com.gentics.mesh.rest.client.MeshBinaryResponse;
 import com.gentics.mesh.rest.client.MeshRestClient;
-import org.apache.commons.io.IOUtils;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
+import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
+import co.gov.cancilleria.miconsulado.config.CmsProperties;
+import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 
 
 @Service
 @JsonIgnoreProperties(ignoreUnknown = true)
+@EnableConfigurationProperties(value = ApplicationProperties.class)
 public class CmsServiceImpl implements CmsService {
+	
+	private int maxDepth;
+	
+	@Autowired
+	private ApplicationProperties appProperties;
 
     private JSONArray arrayProceduresJson = new JSONArray();
+    
+    public void setConfiguration(ApplicationProperties properties) {
+    	this.appProperties = properties;
+    }
+    
+    private MeshRestClient getRestClient() {
+    	MeshRestClient client = MeshRestClient.create(appProperties.getCms().getHost(), appProperties.getCms().getPort(), appProperties.getCms().isHttps());
+        client.setLogin(appProperties.getCms().getUser(), appProperties.getCms().getPassword());
+        client.login().ignoreElement().blockingAwait();
+        
+        return client;
+    }
 
     private String getNavRoot() throws JSONException, IOException {
-        MeshRestClient client = MeshRestClient.create("vps206188.vps.ovh.ca", 8080, false);
-        client.setLogin("admin", "admin");
-        client.login().ignoreElement().blockingAwait();
-
-        // -- http://8a81a152.ngrok.io/
-
-        //Consulta el CMS
-
-        NavigationResponse navRoot = client.navroot("miConsulado", "/", new NavigationParametersImpl().setMaxDepth(20)).blockingGet();
+        
+    	List<ParameterProvider> paramsList = new ArrayList<ParameterProvider>();
+    	
+    	if(maxDepth>0)
+    		paramsList.add(new NavigationParametersImpl().setMaxDepth(maxDepth));
+    	
+    	
+    	//Consulta el CMS
+        NavigationResponse navRoot = getRestClient().navroot("miConsulado", "/", (ParameterProvider[])paramsList.toArray()).blockingGet();
 
 
         List<NavigationElement> navigationElementList = navRoot.getChildren();
@@ -90,7 +115,7 @@ public class CmsServiceImpl implements CmsService {
                             if (key.equals("imagen")) {
                                 BinaryField imagen = fieldsMap.getBinaryField(key);
                                 objectResourceItem.put("uuid", nodeResourceItem.getUuid());
-                                MeshBinaryResponse binary = client.downloadBinaryField("miConsulado", nodeResourceItem.getUuid(), null, "imagen", new NodeParametersImpl().setLanguages("en")).blockingGet();
+                                MeshBinaryResponse binary = getRestClient().downloadBinaryField("miConsulado", nodeResourceItem.getUuid(), null, "imagen", new NodeParametersImpl().setLanguages("en")).blockingGet();
                                 byte[] bytes = IOUtils.toByteArray(binary.getStream());
                                 Base64.Encoder encoder = Base64.getEncoder();
                                 String imagenEncode = encoder.encodeToString(bytes);
@@ -230,11 +255,7 @@ public class CmsServiceImpl implements CmsService {
 
 
     private NodeListResponse getChildNode(String uuid) {
-
-        MeshRestClient client = MeshRestClient.create("vps206188.vps.ovh.ca", 8080, false);
-        client.setLogin("admin", "admin");
-        client.login().ignoreElement().blockingAwait();
-        NodeListResponse childNodesList = client.findNodeChildren("miConsulado", uuid, new NodeParametersImpl().setLanguages("en")).blockingGet();
+        NodeListResponse childNodesList = getRestClient().findNodeChildren("miConsulado", uuid, new NodeParametersImpl().setLanguages("en")).blockingGet();
 
         return childNodesList;
 
@@ -242,12 +263,7 @@ public class CmsServiceImpl implements CmsService {
 
 
     private NodeListResponse getAllNodes() {
-        MeshRestClient client = MeshRestClient.create("vps206188.vps.ovh.ca", 8080, false);
-        client.setLogin("admin", "admin");
-        client.login().ignoreElement().blockingAwait();
-
-
-        NodeListResponse nodes = client.findNodes("miConsulado", new NodeParametersImpl().setLanguages("en")).blockingGet();
+        NodeListResponse nodes = getRestClient().findNodes("miConsulado", new NodeParametersImpl().setLanguages("en")).blockingGet();
 		/*for (NodeResponse nodeResponse : nodes.getData()) {
 			System.out.println(nodeResponse.getUuid());
 			System.out.println(nodeResponse.getFields().getStringField("name").getString());
