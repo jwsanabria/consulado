@@ -2,4 +2,4 @@
 
 export build_version='0.1'
 
-docker build -t co.gov.cancilleria/getmesh:${build_version} ./
+docker build -t co_gov_cancilleria/getmesh:${build_version} ./
