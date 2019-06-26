@@ -4,3 +4,8 @@ services:
     image: co_gov_cancilleria/getmesh:latest
     ports:
       - 8005:8080
+    environment:
+        MESH_DELAY_RESTORE: 120000
+        MESH_ADMIN_USER: admin
+        MESH_ADMIN_PASSWORD: admin
+
