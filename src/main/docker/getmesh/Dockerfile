@@ -5,7 +5,7 @@ RUN apk --no-cache add curl
 
 USER mesh
 WORKDIR /mesh
-COPY ./backup/graphdb/* /backups/
+COPY ./backup/backups/* /backups/
 COPY ./backup/uploads  /uploads
 COPY ./config/  /mesh/config
 COPY ./bin /mesh/bin
