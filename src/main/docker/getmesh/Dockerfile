@@ -5,13 +5,14 @@ RUN apk --no-cache add curl
 
 USER mesh
 WORKDIR /mesh
-COPY ./backup/graphdb /backups/
-#COPY ./backup/binaryImageCache  /mesh/data/binaryImageCache
+COPY ./backup/graphdb/* /backups/
+COPY ./backup/uploads  /uploads
 COPY ./config/  /mesh/config
 COPY ./bin /mesh/bin
 
 USER root
-#RUN chown -R mesh: /mesh/data/
+RUN chown -R mesh: /uploads
+RUN chown -R mesh: /backups
 RUN chown -R mesh: /mesh/bin/
 USER mesh
 
