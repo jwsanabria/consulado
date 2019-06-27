@@ -10,6 +10,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import java.io.IOException;
 
 public interface CmsService {
+	void setMaxDepth(int maxDepth);
 	
 	void setConfiguration(ApplicationProperties properties);
 	

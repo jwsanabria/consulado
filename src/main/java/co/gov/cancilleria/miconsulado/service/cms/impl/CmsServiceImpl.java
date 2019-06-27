@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -44,6 +47,7 @@ public class CmsServiceImpl implements CmsService {
 	
 	@Autowired
 	private ApplicationProperties appProperties;
+	
 
     private JSONArray arrayProceduresJson = new JSONArray();
     
@@ -51,9 +55,23 @@ public class CmsServiceImpl implements CmsService {
     	this.appProperties = properties;
     }
     
-    private MeshRestClient getRestClient() {
+    
+    
+    public int getMaxDepth() {
+		return maxDepth;
+	}
+
+
+
+	public void setMaxDepth(int maxDepth) {
+		this.maxDepth = maxDepth;
+	}
+
+
+
+	private MeshRestClient getRestClient() {
     	MeshRestClient client = MeshRestClient.create(appProperties.getCms().getHost(), appProperties.getCms().getPort(), appProperties.getCms().isHttps());
-        client.setLogin(appProperties.getCms().getUser(), appProperties.getCms().getPassword());
+        client.setLogin(System.getenv("MICONSULADO_CMS_USER"), System.getenv("MICONSULADO_CMS_PASS"));
         client.login().ignoreElement().blockingAwait();
         
         return client;
@@ -63,12 +81,14 @@ public class CmsServiceImpl implements CmsService {
         
     	List<ParameterProvider> paramsList = new ArrayList<ParameterProvider>();
     	
+    	
     	if(maxDepth>0)
     		paramsList.add(new NavigationParametersImpl().setMaxDepth(maxDepth));
     	
+    	ParameterProvider[] params = new ParameterProvider[paramsList.size()];
     	
     	//Consulta el CMS
-        NavigationResponse navRoot = getRestClient().navroot("miConsulado", "/", (ParameterProvider[])paramsList.toArray()).blockingGet();
+        NavigationResponse navRoot = getRestClient().navroot("miConsulado", "/", new NavigationParametersImpl().setMaxDepth(maxDepth)).blockingGet();
 
 
         List<NavigationElement> navigationElementList = navRoot.getChildren();

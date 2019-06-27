@@ -41,10 +41,7 @@ class CMSServiceIT {
         //System.out.println(cmsProperties);
         
 	}
-	/*
-	@Autowired
-	private CmsProperties cmsProperties;
-	*/
+	
 	@Autowired
 	private ApplicationProperties appProperties;
 	
@@ -58,7 +55,7 @@ class CMSServiceIT {
 	
 	@Test
 	void testNavigationRootCMSService() throws JSONException, IOException {
-		//restClient.setConfiguration(cmsProperties);
+		restClient.setMaxDepth(20);
 		String info = restClient.getCmsNavRoot();
 		assertThat(info).isNotNull();
 		System.out.println(info);
