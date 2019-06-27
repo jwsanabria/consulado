@@ -1,11 +1,11 @@
-version: '1'
+version: '2'
 services:
   getmesh:
-    image: co_gov_cancilleria/getmesh:latest
+    image: co_gov_cancilleria/getmesh:0.1
     ports:
       - 8005:8080
     environment:
-        MESH_DELAY_RESTORE: 120000
+        MESH_DELAY_RESTORE: 60
         MESH_ADMIN_USER: admin
         MESH_ADMIN_PASSWORD: admin
 
