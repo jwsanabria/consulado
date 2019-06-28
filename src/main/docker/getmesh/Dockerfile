@@ -1,4 +1,4 @@
-FROM gentics/mesh:0.36.0
+FROM gentics/mesh
 
 USER root
 RUN apk --no-cache add curl
