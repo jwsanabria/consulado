@@ -165,7 +165,6 @@ public class CmsServiceImpl implements CmsService {
 
                 //Procedimientos
                 for (NodeResponse nodeProcedure : nodesProcedure.getData()) {
-
                     //structureFrontJson = buildProcedure(nodeProcedure, structureFrontJson);
                     buildProcedures(nodeProcedure);
                     structureFrontJson.accumulate("procedimientos", arrayProceduresJson);
@@ -196,6 +195,21 @@ public class CmsServiceImpl implements CmsService {
         procedureObject.put("uuid", nodeProcedure.getUuid());
         procedureObject.put("nombre", nodeProcedure.getDisplayName());
 
+        FieldMap fieldsMap = nodeProcedure.getFields();
+        for (String key : fieldsMap.keySet()) {
+            if (key.equals("ordenComponentes")) {
+                NodeFieldList listNode = fieldsMap.getNodeFieldList(key);
+
+                JSONArray arrayProcedureOrder= new JSONArray();
+                for(NodeFieldListItem nodeProcedureOrder : listNode.getItems()){
+                    arrayProcedureOrder.put(nodeProcedureOrder.getUuid());
+                }
+
+                procedureObject.put(key, arrayProcedureOrder);
+
+            }
+        }
+
         //--Componente
         procedureObject.put("componentes", buildComponents(nodeProcedure));
         arrayProceduresJson.put(procedureObject);
@@ -217,10 +231,10 @@ public class CmsServiceImpl implements CmsService {
 
             componentObject.put("uuid", nodeComponent.getUuid());
             componentObject.put("tipoEsquema", nodeComponent.getSchema().getName());
-            if(nodeComponent.getSchema().getName().equals("itemMenu")){
+            if(nodeComponent.getSchema().getName().equals("itemMenu") || nodeComponent.getSchema().getName().equals("procedimientoCostos") ){
                 componentObject.put("uuidVista", nodeComponent.getUuid());
                 //Se crea un Identificador
-                componentObject.put("uuid", UUID.randomUUID().toString().replaceAll("-", ""));
+                //componentObject.put("uuid", UUID.randomUUID().toString().replaceAll("-", ""));
             }
 
             FieldMap fieldsMap = nodeComponent.getFields();
@@ -243,7 +257,7 @@ public class CmsServiceImpl implements CmsService {
                         arrayOrder.put(nodeOrder.getUuid());
                     }
 
-                   componentObject.put(key, arrayOrder);
+                    componentObject.put(key, arrayOrder);
 
                 } else {
                     componentObject.put(key, fieldsMap.getStringField(key));
@@ -274,12 +288,13 @@ public class CmsServiceImpl implements CmsService {
     }
 
 
+
     private NodeListResponse getChildNode(String uuid) {
         NodeListResponse childNodesList = getRestClient().findNodeChildren("miConsulado", uuid, new NodeParametersImpl().setLanguages("en")).blockingGet();
-
         return childNodesList;
 
     }
+
 
 
     private NodeListResponse getAllNodes() {
