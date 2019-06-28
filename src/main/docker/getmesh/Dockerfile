@@ -16,5 +16,3 @@ RUN chown -R mesh: /backups
 RUN chown -R mesh: /mesh/bin/
 USER mesh
 
-
-CMD [ "sh", "/mesh/bin/entrypoint.sh" ]
