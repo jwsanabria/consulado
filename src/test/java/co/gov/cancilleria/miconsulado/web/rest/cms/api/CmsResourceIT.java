@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
+import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
 import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 
 import java.io.IOException;
@@ -21,10 +22,15 @@ class CmsResourceIT {
 	@Autowired
 	private CmsService cmsService;
 	
+	@Autowired
+	private ApplicationProperties appProperties;
+	
 	CmsResource cmsResource;
 	
 	@BeforeEach
     public void setup() {
+		cmsService.setConfiguration(appProperties);
+		cmsService.setMaxDepth(20);
         cmsResource = new CmsResource(cmsService);
     }
 
