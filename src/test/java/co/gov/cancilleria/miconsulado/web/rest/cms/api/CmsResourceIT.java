@@ -46,7 +46,7 @@ class CmsResourceIT {
 	void testGetNavRootCms() throws JSONException, IOException {
 		String response=cmsResource.getNavRootCms();
 		assertThat(response).isNotNull();
-		//System.out.println(response);
+		System.out.println(response);
 	}
 
 }

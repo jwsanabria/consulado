@@ -2,7 +2,12 @@ package co.gov.cancilleria.miconsulado.service.cms.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,7 +54,7 @@ public class CmsServiceImpl implements CmsService {
 	private ApplicationProperties appProperties;
 	
 
-    private JSONArray arrayProceduresJson = new JSONArray();
+    private LinkedList<JSONObject> listProceduresJson = new LinkedList<JSONObject>();
     
     public void setConfiguration(ApplicationProperties properties) {
     	this.appProperties = properties;
@@ -159,6 +164,13 @@ public class CmsServiceImpl implements CmsService {
             } else if (navRootElement.getNode().getDisplayName().toLowerCase().equals("contenido")) {
 
                 System.out.println("Procedimiento - Root : " + navRootElement.getNode().getDisplayName() + " - uuid : " + navRootElement.getNode().getUuid());
+                FieldMap map = navRootElement.getNode().getFields();
+        		Iterator<String> it = map.keySet().iterator();
+        		while (it.hasNext()) {
+        			String clave = (String) it.next();
+        		
+        			System.out.println(clave);
+        		}
 
                 //Se iteran los procedimientos
                 NodeListResponse nodesProcedure = this.getChildNode(navRootElement.getNode().getUuid());
@@ -167,6 +179,8 @@ public class CmsServiceImpl implements CmsService {
                 for (NodeResponse nodeProcedure : nodesProcedure.getData()) {
                     //structureFrontJson = buildProcedure(nodeProcedure, structureFrontJson);
                     buildProcedures(nodeProcedure);
+                    
+                    JSONArray arrayProceduresJson = new JSONArray(listProceduresJson);
                     structureFrontJson.accumulate("procedimientos", arrayProceduresJson);
 
                 }
@@ -212,7 +226,8 @@ public class CmsServiceImpl implements CmsService {
 
         //--Componente
         procedureObject.put("componentes", buildComponents(nodeProcedure));
-        arrayProceduresJson.put(procedureObject);
+        listProceduresJson.addFirst(procedureObject);
+        //arrayProceduresJson.put(procedureObject);
 
     }
 
@@ -291,6 +306,18 @@ public class CmsServiceImpl implements CmsService {
 
     private NodeListResponse getChildNode(String uuid) {
         NodeListResponse childNodesList = getRestClient().findNodeChildren("miConsulado", uuid, new NodeParametersImpl().setLanguages("en")).blockingGet();
+        for (NodeResponse nodeResponse : childNodesList.getData()) {
+		System.out.println(nodeResponse.getUuid());
+		FieldMap map = nodeResponse.getFields();
+		Iterator<String> it = map.keySet().iterator();
+		while (it.hasNext()) {
+			String clave = (String) it.next();
+		
+			//System.out.println(clave);
+		}
+		if(nodeResponse.getFields().getStringField("titulo")!=null)
+			System.out.println(nodeResponse.getFields().getStringField("titulo").getString());
+	}
         return childNodesList;
 
     }
