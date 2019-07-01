@@ -50,6 +50,24 @@ public class CmsServiceImpl implements CmsService {
 	
 	private int maxDepth;
 	
+	private static final String APP_NAME = "miConsulado";
+	private static final String ATTR_UUID = "uuid";
+	private static final String ATTR_IMAGEN = "imagen";
+	private static final String ATTR_CONTENIDO = "contenido";
+	private static final String ATTR_RECURSOS = "recursos";
+	private static final String ATTR_PROCEDIMIENTOS = "procedimientos";
+	private static final String ATTR_NOMBRE = "nombre";
+	private static final String ATTR_ORDEN_COMP = "ordenComponentes";
+	private static final String ATTR_COMPONENTES = "componentes";
+	private static final String ATTR_PROC_COSTOS = "procedimientoCostos";
+	private static final String ATTR_ITEM_MENU = "itemMenu";
+	private static final String ATTR_UUID_VISTA = "uuidVista";
+	private static final String ATTR_TIPO_ESQUEMA = "tipoEsquema";
+	private static final String ATTR_COLOR_FONDO = "colorFondo";
+	private static final String ATTR_ICONO = "icono";
+	private static final String ATTR_ACORDEON = "acordeon";
+	private static final String ATTR_TITULO = "titulo";
+	
 	@Autowired
 	private ApplicationProperties appProperties;
 	
@@ -76,24 +94,16 @@ public class CmsServiceImpl implements CmsService {
 
 	private MeshRestClient getRestClient() {
     	MeshRestClient client = MeshRestClient.create(appProperties.getCms().getHost(), appProperties.getCms().getPort(), appProperties.getCms().isHttps());
-        client.setLogin(System.getenv("MICONSULADO_CMS_USER"), System.getenv("MICONSULADO_CMS_PASS"));
+        client.setLogin(System.getenv(appProperties.getCms().getUser()), System.getenv(appProperties.getCms().getPassword()));
         client.login().ignoreElement().blockingAwait();
         
         return client;
     }
 
     private String getNavRoot() throws JSONException, IOException {
-        
-    	List<ParameterProvider> paramsList = new ArrayList<ParameterProvider>();
-    	
-    	
-    	if(maxDepth>0)
-    		paramsList.add(new NavigationParametersImpl().setMaxDepth(maxDepth));
-    	
-    	ParameterProvider[] params = new ParameterProvider[paramsList.size()];
     	
     	//Consulta el CMS
-        NavigationResponse navRoot = getRestClient().navroot("miConsulado", "/", new NavigationParametersImpl().setMaxDepth(maxDepth)).blockingGet();
+        NavigationResponse navRoot = getRestClient().navroot(APP_NAME, "/", new NavigationParametersImpl().setMaxDepth(maxDepth)).blockingGet();
 
 
         List<NavigationElement> navigationElementList = navRoot.getChildren();
@@ -108,69 +118,20 @@ public class CmsServiceImpl implements CmsService {
             System.out.println("Elemento - Root : " + navRootElement.getNode().getDisplayName() + " - uuid : " + navRootElement.getNode().getUuid());
 
 
-            if (navRootElement.getNode().getDisplayName().toLowerCase().equals("recursos")) {
+            if (navRootElement.getNode().getDisplayName().toLowerCase().equals(ATTR_RECURSOS)) {
 
-                //Objeto de Recursos
-                JSONObject objectRootJson = new JSONObject();
+                buildResources(structureFrontJson, navRootElement.getNode());
 
-                //Se iteran los Recursos
-                NodeListResponse nodesResources = this.getChildNode(navRootElement.getNode().getUuid());
-
-                //Imagenes y Colores
-                for (NodeResponse nodeResource : nodesResources.getData()) {
-
-                    System.out.println("***** Recurso : " + nodeResource.getDisplayName() + " - uuid : " + nodeResource.getUuid());
-                    JSONObject objectResource = new JSONObject();
-
-                    NodeListResponse nodesResourceItems = this.getChildNode(nodeResource.getUuid());
-
-                    //Se iteran todos los items de los recursos
-                    for (NodeResponse nodeResourceItem : nodesResourceItems.getData()) {
-
-                        System.out.println("************ Item Recurso : " + nodeResourceItem.getDisplayName() + " - uuid : " + nodeResourceItem.getUuid());
-
-                        JSONObject objectResourceItem = new JSONObject();
-
-                        // Se incorpora el UUID
-                        objectResourceItem.put("uuid", nodeResourceItem.getUuid());
-
-                        //Se sacan los Campos de los items de los Recursos
-                        FieldMap fieldsMap = nodeResourceItem.getFields();
-                        for (String key : fieldsMap.keySet()) {
-                            if (key.equals("imagen")) {
-                                BinaryField imagen = fieldsMap.getBinaryField(key);
-                                objectResourceItem.put("uuid", nodeResourceItem.getUuid());
-                                MeshBinaryResponse binary = getRestClient().downloadBinaryField("miConsulado", nodeResourceItem.getUuid(), null, "imagen", new NodeParametersImpl().setLanguages("en")).blockingGet();
-                                byte[] bytes = IOUtils.toByteArray(binary.getStream());
-                                Base64.Encoder encoder = Base64.getEncoder();
-                                String imagenEncode = encoder.encodeToString(bytes);
-                                objectResourceItem.put("base64", "data:" + binary.getContentType() + ";base64," + imagenEncode);
-
-                            } else {
-                                //Demas Campos diferentes a Imagen
-                                objectResourceItem.put(key, fieldsMap.getStringField(key));
-                            }
-
-                        }
-
-                        objectResource.accumulate(nodeResource.getDisplayName().toLowerCase(), objectResourceItem);
-
-                    }
-
-                    structureFrontJson.accumulate(navRootElement.getNode().getDisplayName().toLowerCase(), objectResource);
-                }
-
-
-            } else if (navRootElement.getNode().getDisplayName().toLowerCase().equals("contenido")) {
+            } else if (navRootElement.getNode().getDisplayName().toLowerCase().equals(ATTR_CONTENIDO)) {
 
                 System.out.println("Procedimiento - Root : " + navRootElement.getNode().getDisplayName() + " - uuid : " + navRootElement.getNode().getUuid());
-                FieldMap map = navRootElement.getNode().getFields();
+                /*FieldMap map = navRootElement.getNode().getFields();
         		Iterator<String> it = map.keySet().iterator();
         		while (it.hasNext()) {
         			String clave = (String) it.next();
         		
         			System.out.println(clave);
-        		}
+        		}*/
 
                 //Se iteran los procedimientos
                 NodeListResponse nodesProcedure = this.getChildNode(navRootElement.getNode().getUuid());
@@ -181,7 +142,7 @@ public class CmsServiceImpl implements CmsService {
                     buildProcedures(nodeProcedure);
                     
                     JSONArray arrayProceduresJson = new JSONArray(listProceduresJson);
-                    structureFrontJson.accumulate("procedimientos", arrayProceduresJson);
+                    structureFrontJson.accumulate(ATTR_PROCEDIMIENTOS, arrayProceduresJson);
 
                 }
 
@@ -195,6 +156,59 @@ public class CmsServiceImpl implements CmsService {
 
         return structureFrontJson.toString();
     }
+    
+    
+    private void buildResources(JSONObject structureFrontJson, NodeResponse node) throws JSONException, IOException{
+    	//Objeto de Recursos
+        JSONObject objectRootJson = new JSONObject();
+
+        //Se iteran los Recursos
+        NodeListResponse nodesResources = this.getChildNode(node.getUuid());
+
+        //Imagenes y Colores
+        for (NodeResponse nodeResource : nodesResources.getData()) {
+
+            System.out.println("***** Recurso : " + nodeResource.getDisplayName() + " - uuid : " + nodeResource.getUuid());
+            JSONObject objectResource = new JSONObject();
+
+            NodeListResponse nodesResourceItems = this.getChildNode(nodeResource.getUuid());
+
+            //Se iteran todos los items de los recursos
+            for (NodeResponse nodeResourceItem : nodesResourceItems.getData()) {
+
+                System.out.println("************ Item Recurso : " + nodeResourceItem.getDisplayName() + " - uuid : " + nodeResourceItem.getUuid());
+
+                JSONObject objectResourceItem = new JSONObject();
+
+                // Se incorpora el UUID
+                objectResourceItem.put(ATTR_UUID, nodeResourceItem.getUuid());
+
+                //Se sacan los Campos de los items de los Recursos
+                FieldMap fieldsMap = nodeResourceItem.getFields();
+                for (String key : fieldsMap.keySet()) {
+                    if (key.equals(ATTR_IMAGEN)) {
+                        objectResourceItem.put("uuid", nodeResourceItem.getUuid());
+                        MeshBinaryResponse binary = getRestClient().downloadBinaryField(APP_NAME, nodeResourceItem.getUuid(), null, ATTR_IMAGEN, new NodeParametersImpl().setLanguages("en")).blockingGet();
+                        byte[] bytes = IOUtils.toByteArray(binary.getStream());
+                        Base64.Encoder encoder = Base64.getEncoder();
+                        String imagenEncode = encoder.encodeToString(bytes);
+                        objectResourceItem.put("base64", "data:" + binary.getContentType() + ";base64," + imagenEncode);
+
+                    } else {
+                        //Demas Campos diferentes a Imagen
+                        objectResourceItem.put(key, fieldsMap.getStringField(key));
+                    }
+
+                }
+
+                objectResource.accumulate(nodeResource.getDisplayName().toLowerCase(), objectResourceItem);
+
+            }
+
+            structureFrontJson.accumulate(node.getDisplayName().toLowerCase(), objectResource);
+        }
+
+    }
 
 
     private void buildProcedures(NodeResponse nodeProcedure) throws JSONException {
@@ -202,30 +216,18 @@ public class CmsServiceImpl implements CmsService {
         JSONObject procedureObject = new JSONObject();
 
         //---Datos Generales
-        procedureObject.put("uuid", nodeProcedure.getUuid());
-        procedureObject.put("nombre", nodeProcedure.getDisplayName());
+        procedureObject.put(ATTR_UUID, nodeProcedure.getUuid());
+        procedureObject.put(ATTR_NOMBRE, nodeProcedure.getDisplayName());
 
         FieldMap fieldsMap = nodeProcedure.getFields();
-        List<String> listProcedureOrder = new ArrayList();
-        for (String key : fieldsMap.keySet()) {
-            if (key.equals("ordenComponentes")) {
-                NodeFieldList listNode = fieldsMap.getNodeFieldList(key);
-
-                JSONArray arrayProcedureOrder= new JSONArray();
-                for(NodeFieldListItem nodeProcedureOrder : listNode.getItems()){
-                    arrayProcedureOrder.put(nodeProcedureOrder.getUuid());
-                    listProcedureOrder.add(nodeProcedureOrder.getUuid());
-                }
-
-                procedureObject.put(key, arrayProcedureOrder);
-
-            }
+        
+        if(fieldsMap.hasField(ATTR_ORDEN_COMP)) {
+        	procedureObject.put(ATTR_ORDEN_COMP, new JSONArray(getOrderComponents(fieldsMap)));
         }
 
         //--Componente
-        procedureObject.put("componentes", buildComponents(nodeProcedure, listProcedureOrder));
+        procedureObject.put(ATTR_COMPONENTES, buildComponents(nodeProcedure, getOrderComponents(fieldsMap)));
         listProceduresJson.addFirst(procedureObject);
-        //arrayProceduresJson.put(procedureObject);
 
     }
 
@@ -236,48 +238,39 @@ public class CmsServiceImpl implements CmsService {
         JSONObject[] arrayComponentJson = new JSONObject[arrayOrderComponents.size()];
         //----Componentes
 
-        JSONObject components = new JSONObject();
         NodeListResponse nodesComponents = this.getChildNode(nodeProcedure.getUuid());
         for (NodeResponse nodeComponent : nodesComponents.getData()) {
             JSONObject componentObject = new JSONObject();
             Boolean flag = Boolean.TRUE;
 
-            componentObject.put("uuid", nodeComponent.getUuid());
-            componentObject.put("tipoEsquema", nodeComponent.getSchema().getName());
-            if(nodeComponent.getSchema().getName().equals("itemMenu") || nodeComponent.getSchema().getName().equals("procedimientoCostos") ){
-                componentObject.put("uuidVista", nodeComponent.getUuid());
+            componentObject.put(ATTR_UUID, nodeComponent.getUuid());
+            componentObject.put(ATTR_TIPO_ESQUEMA, nodeComponent.getSchema().getName());
+            if(nodeComponent.getSchema().getName().equals(ATTR_ITEM_MENU) || nodeComponent.getSchema().getName().equals(ATTR_PROC_COSTOS) ){
+                componentObject.put(ATTR_UUID_VISTA, nodeComponent.getUuid());
                 //Se crea un Identificador
                 //componentObject.put("uuid", UUID.randomUUID().toString().replaceAll("-", ""));
             }
 
             FieldMap fieldsMap = nodeComponent.getFields();
-            List<String> listComponentOrder = new ArrayList();
             for (String key : fieldsMap.keySet()) {
-                if (key.equals("colorFondo")) {
+                if (key.equals(ATTR_COLOR_FONDO)) {
                     NodeField nodeColorFondo = fieldsMap.getNodeField(key);
                     JSONObject fondoObject = new JSONObject();
-                    fondoObject.put("uuid", nodeColorFondo.getUuid());
+                    fondoObject.put(ATTR_UUID, nodeColorFondo.getUuid());
                     componentObject.put(key, fondoObject);
 
-                } else if (key.equals("icono")) {
+                } else if (key.equals(ATTR_ICONO)) {
                     NodeField icon = fieldsMap.getNodeField(key);
                     componentObject.put(key, icon.getUuid());
 
-                } else if (key.equals("ordenComponentes")) {
-                    NodeFieldList listNode = fieldsMap.getNodeFieldList(key);
-
-                    JSONArray arrayOrder= new JSONArray();
-                    for(NodeFieldListItem nodeOrder : listNode.getItems()){
-                        arrayOrder.put(nodeOrder.getUuid());
-                        listComponentOrder.add(nodeOrder.getUuid());
-                    }
-
-                    componentObject.put(key, arrayOrder);
+                } else if (key.equals(ATTR_ORDEN_COMP)) {
+                	
+                    componentObject.put(key, new JSONArray(getOrderComponents(fieldsMap)));
 
                 } else {
                     componentObject.put(key, fieldsMap.getStringField(key));
-                    if(fieldsMap.getStringField(key).getString().equals("acordeon")){
-                        componentObject.put("componentes",buildComponents(nodeComponent, getOrderComponents(fieldsMap))) ;
+                    if(fieldsMap.getStringField(key).getString().equals(ATTR_ACORDEON)){
+                        componentObject.put(ATTR_COMPONENTES,buildComponents(nodeComponent, getOrderComponents(fieldsMap))) ;
                         flag = Boolean.FALSE;
                     }
                 }
@@ -301,32 +294,32 @@ public class CmsServiceImpl implements CmsService {
     
     private List<String> getOrderComponents(FieldMap fieldsMap){
     	List<String> listComponentOrder = new ArrayList<String>();
-    	NodeFieldList listNode = fieldsMap.getNodeFieldList("ordenComponentes");
-
-        JSONArray arrayOrder= new JSONArray();
-        for(NodeFieldListItem nodeOrder : listNode.getItems()){
-            arrayOrder.put(nodeOrder.getUuid());
-            listComponentOrder.add(nodeOrder.getUuid());
-        }
+    	
+    	if(fieldsMap.hasField(ATTR_ORDEN_COMP)) {
+    		NodeFieldList listNode = fieldsMap.getNodeFieldList(ATTR_ORDEN_COMP);
+    		JSONArray arrayOrder= new JSONArray();
+            for(NodeFieldListItem nodeOrder : listNode.getItems()){
+                arrayOrder.put(nodeOrder.getUuid());
+                listComponentOrder.add(nodeOrder.getUuid());
+            }
+    	}
 
         return listComponentOrder;
     }
 
 
     private NodeListResponse getChildNode(String uuid) {
-        NodeListResponse childNodesList = getRestClient().findNodeChildren("miConsulado", uuid, new NodeParametersImpl().setLanguages("en")).blockingGet();
-        for (NodeResponse nodeResponse : childNodesList.getData()) {
-		System.out.println(nodeResponse.getUuid());
-		FieldMap map = nodeResponse.getFields();
-		Iterator<String> it = map.keySet().iterator();
-		while (it.hasNext()) {
-			String clave = (String) it.next();
-		
-			//System.out.println(clave);
-		}
-		if(nodeResponse.getFields().getStringField("titulo")!=null)
-			System.out.println(nodeResponse.getFields().getStringField("titulo").getString());
-	}
+        NodeListResponse childNodesList = getRestClient().findNodeChildren(APP_NAME, uuid, new NodeParametersImpl().setLanguages("en")).blockingGet();
+        /*for (NodeResponse nodeResponse : childNodesList.getData()) {
+			System.out.println(nodeResponse.getUuid());
+			FieldMap map = nodeResponse.getFields();
+			Iterator<String> it = map.keySet().iterator();
+			while (it.hasNext()) {
+				String clave = (String) it.next();
+			}
+			if(nodeResponse.getFields().getStringField(ATTR_TITULO)!=null)
+				System.out.println(nodeResponse.getFields().getStringField(ATTR_TITULO).getString());
+		}*/
         return childNodesList;
 
     }
@@ -334,11 +327,7 @@ public class CmsServiceImpl implements CmsService {
 
 
     private NodeListResponse getAllNodes() {
-        NodeListResponse nodes = getRestClient().findNodes("miConsulado", new NodeParametersImpl().setLanguages("en")).blockingGet();
-		/*for (NodeResponse nodeResponse : nodes.getData()) {
-			System.out.println(nodeResponse.getUuid());
-			System.out.println(nodeResponse.getFields().getStringField("name").getString());
-		}*/
+        NodeListResponse nodes = getRestClient().findNodes(APP_NAME, new NodeParametersImpl().setLanguages("en")).blockingGet();
 
         return nodes;
     }
