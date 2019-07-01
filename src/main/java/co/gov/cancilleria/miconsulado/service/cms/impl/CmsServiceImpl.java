@@ -193,10 +193,6 @@ public class CmsServiceImpl implements CmsService {
 
         }
 
-
-        //System.out.println(structureFrontJson.toString());
-        //System.out.println("Estructura Completa : "+nav.toJson());
-
         return structureFrontJson.toString();
     }
 
@@ -210,6 +206,7 @@ public class CmsServiceImpl implements CmsService {
         procedureObject.put("nombre", nodeProcedure.getDisplayName());
 
         FieldMap fieldsMap = nodeProcedure.getFields();
+        List<String> listProcedureOrder = new ArrayList();
         for (String key : fieldsMap.keySet()) {
             if (key.equals("ordenComponentes")) {
                 NodeFieldList listNode = fieldsMap.getNodeFieldList(key);
@@ -217,6 +214,7 @@ public class CmsServiceImpl implements CmsService {
                 JSONArray arrayProcedureOrder= new JSONArray();
                 for(NodeFieldListItem nodeProcedureOrder : listNode.getItems()){
                     arrayProcedureOrder.put(nodeProcedureOrder.getUuid());
+                    listProcedureOrder.add(nodeProcedureOrder.getUuid());
                 }
 
                 procedureObject.put(key, arrayProcedureOrder);
@@ -225,17 +223,17 @@ public class CmsServiceImpl implements CmsService {
         }
 
         //--Componente
-        procedureObject.put("componentes", buildComponents(nodeProcedure));
+        procedureObject.put("componentes", buildComponents(nodeProcedure, listProcedureOrder));
         listProceduresJson.addFirst(procedureObject);
         //arrayProceduresJson.put(procedureObject);
 
     }
 
 
-    private JSONArray buildComponents(NodeResponse nodeProcedure) throws JSONException {
+    private JSONArray buildComponents(NodeResponse nodeProcedure, List<String> arrayOrderComponents) throws JSONException {
 
 
-        JSONArray arrayComponentJson = new JSONArray();
+        JSONObject[] arrayComponentJson = new JSONObject[arrayOrderComponents.size()];
         //----Componentes
 
         JSONObject components = new JSONObject();
@@ -253,6 +251,7 @@ public class CmsServiceImpl implements CmsService {
             }
 
             FieldMap fieldsMap = nodeComponent.getFields();
+            List<String> listComponentOrder = new ArrayList();
             for (String key : fieldsMap.keySet()) {
                 if (key.equals("colorFondo")) {
                     NodeField nodeColorFondo = fieldsMap.getNodeField(key);
@@ -270,6 +269,7 @@ public class CmsServiceImpl implements CmsService {
                     JSONArray arrayOrder= new JSONArray();
                     for(NodeFieldListItem nodeOrder : listNode.getItems()){
                         arrayOrder.put(nodeOrder.getUuid());
+                        listComponentOrder.add(nodeOrder.getUuid());
                     }
 
                     componentObject.put(key, arrayOrder);
@@ -277,18 +277,14 @@ public class CmsServiceImpl implements CmsService {
                 } else {
                     componentObject.put(key, fieldsMap.getStringField(key));
                     if(fieldsMap.getStringField(key).getString().equals("acordeon")){
-                        componentObject.put("componentes",buildComponents(nodeComponent)) ;
+                        componentObject.put("componentes",buildComponents(nodeComponent, getOrderComponents(fieldsMap))) ;
                         flag = Boolean.FALSE;
                     }
                 }
 
-
-
-
-
             }
 
-            arrayComponentJson.put(componentObject);
+            arrayComponentJson[arrayOrderComponents.indexOf(nodeComponent.getUuid())] = componentObject;
 
             if (!nodeComponent.getChildrenInfo().isEmpty() && flag) {
                 System.out.println("Tiene Hijos" + nodeComponent.getChildrenInfo().keySet());
@@ -299,9 +295,22 @@ public class CmsServiceImpl implements CmsService {
         }
 
 
-        return arrayComponentJson;
+        return new JSONArray(arrayComponentJson);
     }
 
+    
+    private List<String> getOrderComponents(FieldMap fieldsMap){
+    	List<String> listComponentOrder = new ArrayList<String>();
+    	NodeFieldList listNode = fieldsMap.getNodeFieldList("ordenComponentes");
+
+        JSONArray arrayOrder= new JSONArray();
+        for(NodeFieldListItem nodeOrder : listNode.getItems()){
+            arrayOrder.put(nodeOrder.getUuid());
+            listComponentOrder.add(nodeOrder.getUuid());
+        }
+
+        return listComponentOrder;
+    }
 
 
     private NodeListResponse getChildNode(String uuid) {
