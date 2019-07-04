@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,9 +27,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
-* Integration tests for {@link MailService}.
-*/
+
 @SpringBootTest(classes = {MiconsuladogatewayApp.class})
 @ContextConfiguration(initializers = ConfigFileApplicationContextInitializer.class)
 class CMSServiceIT {
@@ -56,7 +55,7 @@ class CMSServiceIT {
 	@Test
 	void testNavigationRootCMSService() throws JSONException, IOException {
 		restClient.setMaxDepth(20);
-		String info = restClient.getCmsNavRoot();
+        JSONObject info = restClient.getCmsNavRoot();
 		assertThat(info).isNotNull();
 		System.out.println(info);
 		//assertThat(info.getData()).isNotNull();

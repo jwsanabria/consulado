@@ -6,6 +6,7 @@ import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
 import co.gov.cancilleria.miconsulado.config.CmsProperties;
 
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import java.io.IOException;
 
@@ -15,7 +16,7 @@ public interface CmsService {
 	void setConfiguration(ApplicationProperties properties);
 	
 	String getAllCmsNodes();
-    
-    String getCmsNavRoot() throws JSONException, IOException;
+
+    JSONObject getCmsNavRoot() throws JSONException, IOException;
 
 }
