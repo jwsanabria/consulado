@@ -59,7 +59,7 @@ public class CmsServiceImpl implements CmsService {
     private ApplicationProperties appProperties;
 
 
-    private LinkedList<JSONObject> listProceduresJson = new LinkedList<JSONObject>();
+    private LinkedList<JSONObject> listProceduresJson;
 
     public void setConfiguration(ApplicationProperties properties) {
         this.appProperties = properties;
@@ -89,12 +89,15 @@ public class CmsServiceImpl implements CmsService {
         //Consulta el CMS
         NavigationResponse navRoot = getRestClient().navroot(APP_NAME, "/", new NavigationParametersImpl().setMaxDepth(maxDepth)).blockingGet();
 
+        //Estructura para el Front-End
+        JSONObject structureFrontJson = new JSONObject();
+
+        //Se reinicia la lista de procedimientos
+        listProceduresJson = new LinkedList<JSONObject>();
+
 
         List<NavigationElement> navigationElementList = navRoot.getChildren();
         System.out.println("size : " + navigationElementList.size());
-
-        //Estructura para el Front-End
-        JSONObject structureFrontJson = new JSONObject();
 
 
         for (NavigationElement navRootElement : navigationElementList) {
