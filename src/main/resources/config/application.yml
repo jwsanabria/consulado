@@ -170,3 +170,27 @@ jhipster:
 # ===================================================================
 
 # application:
+mds:
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        databaseName:
+        serverName:
+        url: jdbc:sqlserver://172.20.18.152\DW2017;databaseName=MDS
+        username: CRM_MDS
+        password: $3h4ARCwayKVN_4N
+        autocommit: false
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+        hikari:
+            poolName: mdsHikari
+            auto-commit: false
+    jpa:
+        database-platform: org.hibernate.dialect.SQLServerDialect
+        database: SQL_SERVER
+        openInView: false
+        show_sql: true
+        generate-ddl: false
+

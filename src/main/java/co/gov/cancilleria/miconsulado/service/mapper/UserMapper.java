@@ -1,12 +1,14 @@
 package co.gov.cancilleria.miconsulado.service.mapper;
 
-import co.gov.cancilleria.miconsulado.domain.Authority;
-import co.gov.cancilleria.miconsulado.domain.User;
+import co.gov.cancilleria.miconsulado.domain.main.Authority;
+import co.gov.cancilleria.miconsulado.domain.main.User;
 import co.gov.cancilleria.miconsulado.service.dto.UserDTO;
-
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

@@ -1,9 +1,8 @@
 package co.gov.cancilleria.miconsulado.web.rest;
 
-import co.gov.cancilleria.miconsulado.domain.Employee;
-import co.gov.cancilleria.miconsulado.repository.EmployeeRepository;
+import co.gov.cancilleria.miconsulado.domain.main.Employee;
+import co.gov.cancilleria.miconsulado.repository.main.EmployeeRepository;
 import co.gov.cancilleria.miconsulado.web.rest.errors.BadRequestAlertException;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -13,20 +12,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 
 /**
- * REST controller for managing {@link co.gov.cancilleria.miconsulado.domain.Employee}.
+ * REST controller for managing {@link Employee}.
  */
 @RestController
 @RequestMapping("/api")

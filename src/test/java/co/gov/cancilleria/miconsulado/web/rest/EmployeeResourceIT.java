@@ -1,10 +1,9 @@
 package co.gov.cancilleria.miconsulado.web.rest;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.domain.Employee;
-import co.gov.cancilleria.miconsulado.repository.EmployeeRepository;
+import co.gov.cancilleria.miconsulado.domain.main.Employee;
+import co.gov.cancilleria.miconsulado.repository.main.EmployeeRepository;
 import co.gov.cancilleria.miconsulado.web.rest.errors.ExceptionTranslator;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;

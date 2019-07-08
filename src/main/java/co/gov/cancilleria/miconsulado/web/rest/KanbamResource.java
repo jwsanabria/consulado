@@ -1,9 +1,9 @@
 package co.gov.cancilleria.miconsulado.web.rest;
 
+import co.gov.cancilleria.miconsulado.domain.main.Kanbam;
 import co.gov.cancilleria.miconsulado.service.KanbamService;
-import co.gov.cancilleria.miconsulado.web.rest.errors.BadRequestAlertException;
 import co.gov.cancilleria.miconsulado.service.dto.KanbamDTO;
-
+import co.gov.cancilleria.miconsulado.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 
 /**
- * REST controller for managing {@link co.gov.cancilleria.miconsulado.domain.Kanbam}.
+ * REST controller for managing {@link Kanbam}.
  */
 @RestController
 @RequestMapping("/api")

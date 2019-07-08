@@ -1,12 +1,13 @@
 package co.gov.cancilleria.miconsulado.service;
 
+import co.gov.cancilleria.miconsulado.domain.main.Kanbam;
 import co.gov.cancilleria.miconsulado.service.dto.KanbamDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Service Interface for managing {@link co.gov.cancilleria.miconsulado.domain.Kanbam}.
+ * Service Interface for managing {@link Kanbam}.
  */
 public interface KanbamService {
 

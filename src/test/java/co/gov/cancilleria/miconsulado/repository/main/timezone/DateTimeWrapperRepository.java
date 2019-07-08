@@ -1,4 +1,4 @@
-package co.gov.cancilleria.miconsulado.repository.timezone;
+package co.gov.cancilleria.miconsulado.repository.main.timezone;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

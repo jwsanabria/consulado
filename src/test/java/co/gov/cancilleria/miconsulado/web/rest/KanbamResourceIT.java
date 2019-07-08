@@ -1,13 +1,13 @@
 package co.gov.cancilleria.miconsulado.web.rest;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.domain.Kanbam;
-import co.gov.cancilleria.miconsulado.repository.KanbamRepository;
+import co.gov.cancilleria.miconsulado.domain.main.Kanbam;
+import co.gov.cancilleria.miconsulado.domain.main.enumeration.State;
+import co.gov.cancilleria.miconsulado.repository.main.KanbamRepository;
 import co.gov.cancilleria.miconsulado.service.KanbamService;
 import co.gov.cancilleria.miconsulado.service.dto.KanbamDTO;
 import co.gov.cancilleria.miconsulado.service.mapper.KanbamMapper;
 import co.gov.cancilleria.miconsulado.web.rest.errors.ExceptionTranslator;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -29,8 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import co.gov.cancilleria.miconsulado.domain.enumeration.State;
 /**
  * Integration tests for the {@Link KanbamResource} REST controller.
  */

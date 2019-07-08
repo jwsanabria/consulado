@@ -1,9 +1,9 @@
 package co.gov.cancilleria.miconsulado.service.mapper;
 
-import co.gov.cancilleria.miconsulado.domain.*;
+import co.gov.cancilleria.miconsulado.domain.main.Kanbam;
 import co.gov.cancilleria.miconsulado.service.dto.KanbamDTO;
-
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Mapper for the entity {@link Kanbam} and its DTO {@link KanbamDTO}.

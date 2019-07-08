@@ -1,9 +1,8 @@
 package co.gov.cancilleria.miconsulado.service;
 
-import co.gov.cancilleria.miconsulado.config.Constants;
-
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.domain.User;
+import co.gov.cancilleria.miconsulado.config.Constants;
+import co.gov.cancilleria.miconsulado.domain.main.User;
 import io.github.jhipster.config.JHipsterProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

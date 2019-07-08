@@ -1,7 +1,6 @@
-package co.gov.cancilleria.miconsulado.domain;
+package co.gov.cancilleria.miconsulado.domain.main;
 
 import co.gov.cancilleria.miconsulado.config.Constants;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;

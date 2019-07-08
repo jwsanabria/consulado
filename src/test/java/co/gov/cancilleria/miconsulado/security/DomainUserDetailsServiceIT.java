@@ -1,9 +1,8 @@
 package co.gov.cancilleria.miconsulado.security;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.domain.User;
-import co.gov.cancilleria.miconsulado.repository.UserRepository;
-
+import co.gov.cancilleria.miconsulado.domain.main.User;
+import co.gov.cancilleria.miconsulado.repository.main.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

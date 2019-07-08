@@ -1,6 +1,6 @@
 package co.gov.cancilleria.miconsulado.service;
 
-import co.gov.cancilleria.miconsulado.domain.Task;
+import co.gov.cancilleria.miconsulado.domain.main.Task;
 
 import java.util.List;
 import java.util.Optional;

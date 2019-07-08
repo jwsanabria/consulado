@@ -1,13 +1,12 @@
 package co.gov.cancilleria.miconsulado.service.impl;
 
+import co.gov.cancilleria.miconsulado.domain.main.Kanbam;
+import co.gov.cancilleria.miconsulado.repository.main.KanbamRepository;
 import co.gov.cancilleria.miconsulado.service.KanbamService;
-import co.gov.cancilleria.miconsulado.domain.Kanbam;
-import co.gov.cancilleria.miconsulado.repository.KanbamRepository;
 import co.gov.cancilleria.miconsulado.service.dto.KanbamDTO;
 import co.gov.cancilleria.miconsulado.service.mapper.KanbamMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

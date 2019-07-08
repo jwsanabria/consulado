@@ -1,7 +1,6 @@
 package co.gov.cancilleria.miconsulado.config.audit;
 
-import co.gov.cancilleria.miconsulado.domain.PersistentAuditEvent;
-
+import co.gov.cancilleria.miconsulado.domain.main.PersistentAuditEvent;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;

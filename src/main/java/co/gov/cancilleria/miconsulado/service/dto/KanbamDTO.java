@@ -1,10 +1,13 @@
 package co.gov.cancilleria.miconsulado.service.dto;
+
+import co.gov.cancilleria.miconsulado.domain.main.Kanbam;
+import co.gov.cancilleria.miconsulado.domain.main.enumeration.State;
+
 import java.io.Serializable;
 import java.util.Objects;
-import co.gov.cancilleria.miconsulado.domain.enumeration.State;
 
 /**
- * A DTO for the {@link co.gov.cancilleria.miconsulado.domain.Kanbam} entity.
+ * A DTO for the {@link Kanbam} entity.
  */
 public class KanbamDTO implements Serializable {
 

@@ -1,9 +1,9 @@
 package co.gov.cancilleria.miconsulado.web.rest;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.domain.Authority;
-import co.gov.cancilleria.miconsulado.domain.User;
-import co.gov.cancilleria.miconsulado.repository.UserRepository;
+import co.gov.cancilleria.miconsulado.domain.main.Authority;
+import co.gov.cancilleria.miconsulado.domain.main.User;
+import co.gov.cancilleria.miconsulado.repository.main.UserRepository;
 import co.gov.cancilleria.miconsulado.security.AuthoritiesConstants;
 import co.gov.cancilleria.miconsulado.service.MailService;
 import co.gov.cancilleria.miconsulado.service.UserService;
@@ -25,11 +25,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 

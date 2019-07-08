@@ -1,6 +1,6 @@
-package co.gov.cancilleria.miconsulado.repository;
+package co.gov.cancilleria.miconsulado.repository.main;
 
-import co.gov.cancilleria.miconsulado.domain.PersistentAuditEvent;
+import co.gov.cancilleria.miconsulado.domain.main.PersistentAuditEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,14 +1,12 @@
-package co.gov.cancilleria.miconsulado.domain;
+package co.gov.cancilleria.miconsulado.domain.main;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 /**
  * A Job.

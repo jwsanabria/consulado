@@ -2,10 +2,10 @@ package co.gov.cancilleria.miconsulado.web.rest;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
 import co.gov.cancilleria.miconsulado.config.Constants;
-import co.gov.cancilleria.miconsulado.domain.Authority;
-import co.gov.cancilleria.miconsulado.domain.User;
-import co.gov.cancilleria.miconsulado.repository.AuthorityRepository;
-import co.gov.cancilleria.miconsulado.repository.UserRepository;
+import co.gov.cancilleria.miconsulado.domain.main.Authority;
+import co.gov.cancilleria.miconsulado.domain.main.User;
+import co.gov.cancilleria.miconsulado.repository.main.AuthorityRepository;
+import co.gov.cancilleria.miconsulado.repository.main.UserRepository;
 import co.gov.cancilleria.miconsulado.security.AuthoritiesConstants;
 import co.gov.cancilleria.miconsulado.service.MailService;
 import co.gov.cancilleria.miconsulado.service.UserService;
@@ -15,7 +15,6 @@ import co.gov.cancilleria.miconsulado.web.rest.errors.ExceptionTranslator;
 import co.gov.cancilleria.miconsulado.web.rest.vm.KeyAndPasswordVM;
 import co.gov.cancilleria.miconsulado.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -31,13 +30,17 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**

@@ -1,11 +1,10 @@
-package co.gov.cancilleria.miconsulado.domain;
+package co.gov.cancilleria.miconsulado.domain.main;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Map;
 
 /**

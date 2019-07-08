@@ -1,7 +1,7 @@
 package co.gov.cancilleria.miconsulado.security;
 
-import co.gov.cancilleria.miconsulado.domain.User;
-import co.gov.cancilleria.miconsulado.repository.UserRepository;
+import co.gov.cancilleria.miconsulado.domain.main.User;
+import co.gov.cancilleria.miconsulado.repository.main.UserRepository;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**

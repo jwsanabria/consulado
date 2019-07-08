@@ -1,7 +1,6 @@
-package co.gov.cancilleria.miconsulado.repository;
+package co.gov.cancilleria.miconsulado.repository.main;
 
-import co.gov.cancilleria.miconsulado.domain.Authority;
-
+import co.gov.cancilleria.miconsulado.domain.main.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

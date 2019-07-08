@@ -1,4 +1,4 @@
-package co.gov.cancilleria.miconsulado.domain.enumeration;
+package co.gov.cancilleria.miconsulado.domain.main.enumeration;
 
 /**
  * The State enumeration.

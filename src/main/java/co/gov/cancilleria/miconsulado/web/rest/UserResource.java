@@ -1,8 +1,8 @@
 package co.gov.cancilleria.miconsulado.web.rest;
 
 import co.gov.cancilleria.miconsulado.config.Constants;
-import co.gov.cancilleria.miconsulado.domain.User;
-import co.gov.cancilleria.miconsulado.repository.UserRepository;
+import co.gov.cancilleria.miconsulado.domain.main.User;
+import co.gov.cancilleria.miconsulado.repository.main.UserRepository;
 import co.gov.cancilleria.miconsulado.security.AuthoritiesConstants;
 import co.gov.cancilleria.miconsulado.service.MailService;
 import co.gov.cancilleria.miconsulado.service.UserService;
@@ -10,11 +10,9 @@ import co.gov.cancilleria.miconsulado.service.dto.UserDTO;
 import co.gov.cancilleria.miconsulado.web.rest.errors.BadRequestAlertException;
 import co.gov.cancilleria.miconsulado.web.rest.errors.EmailAlreadyUsedException;
 import co.gov.cancilleria.miconsulado.web.rest.errors.LoginAlreadyUsedException;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +29,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller for managing users.

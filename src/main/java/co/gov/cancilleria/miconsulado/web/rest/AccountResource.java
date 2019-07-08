@@ -1,17 +1,19 @@
 package co.gov.cancilleria.miconsulado.web.rest;
 
 
-import co.gov.cancilleria.miconsulado.domain.User;
-import co.gov.cancilleria.miconsulado.repository.UserRepository;
+import co.gov.cancilleria.miconsulado.domain.main.User;
+import co.gov.cancilleria.miconsulado.repository.main.UserRepository;
 import co.gov.cancilleria.miconsulado.security.SecurityUtils;
 import co.gov.cancilleria.miconsulado.service.MailService;
 import co.gov.cancilleria.miconsulado.service.UserService;
 import co.gov.cancilleria.miconsulado.service.dto.PasswordChangeDTO;
 import co.gov.cancilleria.miconsulado.service.dto.UserDTO;
-import co.gov.cancilleria.miconsulado.web.rest.errors.*;
+import co.gov.cancilleria.miconsulado.web.rest.errors.EmailAlreadyUsedException;
+import co.gov.cancilleria.miconsulado.web.rest.errors.EmailNotFoundException;
+import co.gov.cancilleria.miconsulado.web.rest.errors.InvalidPasswordException;
+import co.gov.cancilleria.miconsulado.web.rest.errors.LoginAlreadyUsedException;
 import co.gov.cancilleria.miconsulado.web.rest.vm.KeyAndPasswordVM;
 import co.gov.cancilleria.miconsulado.web.rest.vm.ManagedUserVM;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Optional;
 
 /**
  * REST controller for managing the current user's account.

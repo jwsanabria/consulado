@@ -1,9 +1,9 @@
-package co.gov.cancilleria.miconsulado.repository;
+package co.gov.cancilleria.miconsulado.repository.main;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
 import co.gov.cancilleria.miconsulado.config.Constants;
 import co.gov.cancilleria.miconsulado.config.audit.AuditEventConverter;
-import co.gov.cancilleria.miconsulado.domain.PersistentAuditEvent;
+import co.gov.cancilleria.miconsulado.domain.main.PersistentAuditEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static co.gov.cancilleria.miconsulado.repository.main.CustomAuditEventRepository.EVENT_DATA_COLUMN_MAX_LENGTH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static co.gov.cancilleria.miconsulado.repository.CustomAuditEventRepository.EVENT_DATA_COLUMN_MAX_LENGTH;
 
 /**
  * Integration tests for {@link CustomAuditEventRepository}.

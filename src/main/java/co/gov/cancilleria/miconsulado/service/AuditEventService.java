@@ -1,7 +1,7 @@
 package co.gov.cancilleria.miconsulado.service;
 
 import co.gov.cancilleria.miconsulado.config.audit.AuditEventConverter;
-import co.gov.cancilleria.miconsulado.repository.PersistenceAuditEventRepository;
+import co.gov.cancilleria.miconsulado.repository.main.PersistenceAuditEventRepository;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

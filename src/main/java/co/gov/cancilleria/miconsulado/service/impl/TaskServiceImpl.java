@@ -1,11 +1,10 @@
 package co.gov.cancilleria.miconsulado.service.impl;
 
+import co.gov.cancilleria.miconsulado.domain.main.Task;
+import co.gov.cancilleria.miconsulado.repository.main.TaskRepository;
 import co.gov.cancilleria.miconsulado.service.TaskService;
-import co.gov.cancilleria.miconsulado.domain.Task;
-import co.gov.cancilleria.miconsulado.repository.TaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

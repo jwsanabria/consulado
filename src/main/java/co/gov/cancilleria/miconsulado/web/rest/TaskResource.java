@@ -1,9 +1,8 @@
 package co.gov.cancilleria.miconsulado.web.rest;
 
-import co.gov.cancilleria.miconsulado.domain.Task;
+import co.gov.cancilleria.miconsulado.domain.main.Task;
 import co.gov.cancilleria.miconsulado.service.TaskService;
 import co.gov.cancilleria.miconsulado.web.rest.errors.BadRequestAlertException;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -14,12 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 
 /**
- * REST controller for managing {@link co.gov.cancilleria.miconsulado.domain.Task}.
+ * REST controller for managing {@link Task}.
  */
 @RestController
 @RequestMapping("/api")

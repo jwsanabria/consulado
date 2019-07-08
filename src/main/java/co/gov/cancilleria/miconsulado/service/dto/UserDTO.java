@@ -1,14 +1,13 @@
 package co.gov.cancilleria.miconsulado.service.dto;
 
 import co.gov.cancilleria.miconsulado.config.Constants;
-
-import co.gov.cancilleria.miconsulado.domain.Authority;
-import co.gov.cancilleria.miconsulado.domain.User;
+import co.gov.cancilleria.miconsulado.domain.main.Authority;
+import co.gov.cancilleria.miconsulado.domain.main.User;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-
-import javax.validation.constraints.*;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;

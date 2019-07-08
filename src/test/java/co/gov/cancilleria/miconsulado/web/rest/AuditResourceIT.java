@@ -2,9 +2,8 @@ package co.gov.cancilleria.miconsulado.web.rest;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
 import co.gov.cancilleria.miconsulado.config.audit.AuditEventConverter;
-import co.gov.cancilleria.miconsulado.domain.PersistentAuditEvent;
-import co.gov.cancilleria.miconsulado.repository.PersistenceAuditEventRepository;
-
+import co.gov.cancilleria.miconsulado.domain.main.PersistentAuditEvent;
+import co.gov.cancilleria.miconsulado.repository.main.PersistenceAuditEventRepository;
 import co.gov.cancilleria.miconsulado.service.AuditEventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

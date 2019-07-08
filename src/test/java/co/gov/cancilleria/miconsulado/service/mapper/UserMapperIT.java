@@ -2,7 +2,7 @@ package co.gov.cancilleria.miconsulado.service.mapper;
 
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.domain.User;
+import co.gov.cancilleria.miconsulado.domain.main.User;
 import co.gov.cancilleria.miconsulado.service.dto.UserDTO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
