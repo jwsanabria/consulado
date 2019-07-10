@@ -12,8 +12,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ApplicationProperties {
 
 	CmsProperties cms;
-	
-	private String name;
 
 	public CmsProperties getCms() {
 		return cms;
@@ -23,19 +21,10 @@ public class ApplicationProperties {
 		this.cms = cms;
 	}
 	
-	
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	@Override
 	public String toString() {
-		return "ApplicationProperties [cms=" + cms + ", name=" + name + "]";
+		return "ApplicationProperties [cms=" + cms +  "]";
 	}
 	
 	

@@ -152,7 +152,6 @@ jhipster:
 # ===================================================================
 
 application:
-  name: 'JHIPSTERCONSULADO'
   cms:
     user: MICONSULADO_CMS_USER
     password: MICONSULADO_CMS_PASS

@@ -1,19 +1,18 @@
 package co.gov.cancilleria.miconsulado.web.rest.cms.api;
 
-import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
-import co.gov.cancilleria.miconsulado.service.cms.CmsService;
-import com.google.gson.JsonObject;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.IOException;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
+import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
+import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 
 @SpringBootTest(classes = MiconsuladogatewayApp.class)
 class CmsResourceIT {
@@ -36,7 +35,6 @@ class CmsResourceIT {
     void testGetAllCmsNodes() {
         String response = cmsResource.getAllCmsNodes();
         assertThat(response).isNotNull();
-        //System.out.println(response);
     }
 
 
@@ -44,7 +42,6 @@ class CmsResourceIT {
     void testGetNavRootCms() throws JSONException, IOException {
         String response = cmsResource.getNavRootCms();
         assertThat(response).isNotNull();
-        System.out.println(response);
     }
 
 }

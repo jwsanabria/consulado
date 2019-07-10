@@ -1,12 +1,5 @@
 package co.gov.cancilleria.miconsulado.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-
-
-
-
 public class CmsProperties {
 	private String user;
 	private String password;

@@ -1,31 +1,22 @@
 package co.gov.cancilleria.miconsulado.rest.client.cms;
 
 import static org.assertj.core.api.Assertions.assertThat;
- 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-
-import com.gentics.mesh.core.rest.node.NodeListResponse;
-
-import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
-import co.gov.cancilleria.miconsulado.config.CmsProperties;
-import co.gov.cancilleria.miconsulado.service.cms.CmsService;
-import co.gov.cancilleria.miconsulado.service.cms.impl.CmsServiceImpl;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+
+import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
+import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
+import co.gov.cancilleria.miconsulado.service.cms.CmsService;
+import co.gov.cancilleria.miconsulado.service.cms.impl.CmsServiceImpl;
 
 
 @SpringBootTest(classes = {MiconsuladogatewayApp.class})
@@ -33,33 +24,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CMSServiceIT {
 	private CmsService restClient;
 	
+	@Autowired
+	private ApplicationProperties appProperties;
+	
 	@BeforeEach
     public void init() {
         restClient = new CmsServiceImpl();
         restClient.setConfiguration(appProperties);
-        //System.out.println(cmsProperties);
         
 	}
 	
-	@Autowired
-	private ApplicationProperties appProperties;
-	
-
-/*	@Test
-	void testCallCMSService() {
-		String info = restClient.getAllCmsNodes();
-		assertThat(info).isNotNull();
-		//assertThat(info.getData()).isNotNull();
-	}*/
 	
 	@Test
 	void testNavigationRootCMSService() throws JSONException, IOException {
 		restClient.setMaxDepth(20);
         JSONObject info = restClient.getCmsNavRoot();
 		assertThat(info).isNotNull();
-		System.out.println(info);
-		//assertThat(info.getData()).isNotNull();
-		System.out.println(appProperties);
 	}
 
 }
