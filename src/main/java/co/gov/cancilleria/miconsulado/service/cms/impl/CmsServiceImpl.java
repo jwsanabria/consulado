@@ -1,21 +1,7 @@
 package co.gov.cancilleria.miconsulado.service.cms.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.stereotype.Service;
-
+import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
+import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.gentics.mesh.core.rest.navigation.NavigationElement;
 import com.gentics.mesh.core.rest.navigation.NavigationResponse;
@@ -28,9 +14,16 @@ import com.gentics.mesh.parameter.client.NavigationParametersImpl;
 import com.gentics.mesh.parameter.client.NodeParametersImpl;
 import com.gentics.mesh.rest.client.MeshBinaryResponse;
 import com.gentics.mesh.rest.client.MeshRestClient;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.stereotype.Service;
 
-import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
-import co.gov.cancilleria.miconsulado.service.cms.CmsService;
+import java.io.IOException;
+import java.util.*;
 
 
 @Service
@@ -91,16 +84,15 @@ public class CmsServiceImpl implements CmsService {
     }
 
 
-
-    private NodeListResponse findChildNav(NavigationResponse navRoot ,String uuid ){
+    private NodeListResponse findChildNav(NavigationResponse navRoot, String uuid) {
 
         List<NavigationElement> navigationElementList = navRoot.getChildren();
 
-        for(NavigationElement navRootElement : navigationElementList){
-           if( navRootElement.getNode().getUuid().equals(uuid)){
-               List<NavigationElement>  elements =  navRootElement.getChildren();
+        for (NavigationElement navRootElement : navigationElementList) {
+            if (navRootElement.getNode().getUuid().equals(uuid)) {
+                List<NavigationElement> elements = navRootElement.getChildren();
 
-           }
+            }
 
         }
 
@@ -116,8 +108,8 @@ public class CmsServiceImpl implements CmsService {
         TInicio = System.currentTimeMillis();
         NavigationResponse navRoot = getRestClient().navroot(APP_NAME, "/", new NavigationParametersImpl().setIncludeAll(true)).blockingGet();
         TFin = System.currentTimeMillis();
-        double tiempo = (double) ((TFin - TInicio)/1000);
-        System.out.println("Consulta CMS = " +tiempo +" segundos");
+        double tiempo = (double) ((TFin - TInicio) / 1000);
+        System.out.println("Consulta CMS = " + tiempo + " segundos");
 
         //Estructura para el Front-End
         JSONObject structureFrontJson = new JSONObject();
@@ -132,7 +124,7 @@ public class CmsServiceImpl implements CmsService {
 
         for (NavigationElement navRootElement : navigationElementList) {
 
-          //  System.out.println("Elemento - Root : " + navRootElement.getNode().getDisplayName() + " - uuid : " + navRootElement.getNode().getUuid());
+            //  System.out.println("Elemento - Root : " + navRootElement.getNode().getDisplayName() + " - uuid : " + navRootElement.getNode().getUuid());
 
 
             if (navRootElement.getNode().getDisplayName().toLowerCase().equals(ATTR_RECURSOS)) {
@@ -141,9 +133,9 @@ public class CmsServiceImpl implements CmsService {
 
             } else if (navRootElement.getNode().getDisplayName().toLowerCase().equals(ATTR_CONTENIDO)) {
 
-               // System.out.println("Procedimiento - Root : " + navRootElement.getNode().getDisplayName() + " - uuid : " + navRootElement.getNode().getUuid());
-                              //Se iteran los procedimientos
-                List<NavigationElement>  nodesProcedureList = navRootElement.getChildren();
+                // System.out.println("Procedimiento - Root : " + navRootElement.getNode().getDisplayName() + " - uuid : " + navRootElement.getNode().getUuid());
+                //Se iteran los procedimientos
+                List<NavigationElement> nodesProcedureList = navRootElement.getChildren();
 
                 //Procedimientos
                 for (NavigationElement nodeProcedure : nodesProcedureList) {
@@ -165,8 +157,8 @@ public class CmsServiceImpl implements CmsService {
 
 
         TFin = System.currentTimeMillis();
-        tiempo = (double) ((TFin - TInicio)/1000);
-        System.out.println("Current Time in milliseconds Fin = " + tiempo+" segundos");
+        tiempo = (double) ((TFin - TInicio) / 1000);
+        System.out.println("Current Time in milliseconds Fin = " + tiempo + " segundos");
         return structureFrontJson;
     }
 
@@ -176,7 +168,7 @@ public class CmsServiceImpl implements CmsService {
         JSONObject objectRootJson = new JSONObject();
 
         //Se iteran los Recursos
-        List<NavigationElement>  nodesListResources =  node.getChildren();
+        List<NavigationElement> nodesListResources = node.getChildren();
 
         //this.getChildNode(node.getUuid());
 
@@ -186,7 +178,7 @@ public class CmsServiceImpl implements CmsService {
             //System.out.println("***** Recurso : " + nodeResource.getNode().getDisplayName() + " - uuid : " + nodeResource.getUuid());
             JSONObject objectResource = new JSONObject();
 
-            List<NavigationElement>  nodesResourceItems = nodeResource.getChildren();
+            List<NavigationElement> nodesResourceItems = nodeResource.getChildren();
 
             //Se iteran todos los items de los recursos
             for (NavigationElement nodeResourceItem : nodesResourceItems) {
@@ -203,10 +195,10 @@ public class CmsServiceImpl implements CmsService {
                 for (String key : fieldsMap.keySet()) {
                     if (key.equals(ATTR_IMAGEN)) {
                         objectResourceItem.put("uuid", nodeResourceItem.getUuid());
-                       // MeshBinaryResponse binary = getRestClient().downloadBinaryField(APP_NAME, nodeResourceItem.getUuid(), null, ATTR_IMAGEN, new NodeParametersImpl().setLanguages("en")).blockingGet();
-                       // byte[] bytes = IOUtils.toByteArray(binary.getStream());
-                       // Base64.Encoder encoder = Base64.getEncoder();
-                       // String imagenEncode = encoder.encodeToString(bytes);
+                        // MeshBinaryResponse binary = getRestClient().downloadBinaryField(APP_NAME, nodeResourceItem.getUuid(), null, ATTR_IMAGEN, new NodeParametersImpl().setLanguages("en")).blockingGet();
+                        // byte[] bytes = IOUtils.toByteArray(binary.getStream());
+                        // Base64.Encoder encoder = Base64.getEncoder();
+                        // String imagenEncode = encoder.encodeToString(bytes);
                         long TInicio, TFin;
 
                         //Consulta el CMS
@@ -214,7 +206,7 @@ public class CmsServiceImpl implements CmsService {
                         objectResourceItem.put("base64", "data:" + "image/png" + ";base64," + getBase64ImageResource(nodeResourceItem.getUuid()));
                         TFin = System.currentTimeMillis();
                         double tiempo = (double) ((TFin - TInicio));
-                        System.out.println("getBase64ImageResource = " + tiempo+" segundos");
+                        System.out.println("getBase64ImageResource = " + tiempo + " segundos");
 
                     } else {
                         //Demas Campos diferentes a Imagen
@@ -233,14 +225,12 @@ public class CmsServiceImpl implements CmsService {
     }
 
 
-
-
     Map<String, String> bufferMap = new HashMap<String, String>();
 
     public String getBase64ImageResource(String uuid) throws IOException {
         System.out.println("getBase64ImageResource = " + uuid);
         String imagenEncode = "";
-        if(bufferMap.containsKey(uuid)){
+        if (bufferMap.containsKey(uuid)) {
             imagenEncode = bufferMap.get(uuid);
         } else {
 
@@ -248,7 +238,7 @@ public class CmsServiceImpl implements CmsService {
             byte[] bytes = IOUtils.toByteArray(binary.getStream());
             Base64.Encoder encoder = Base64.getEncoder();
             imagenEncode = encoder.encodeToString(bytes);
-            bufferMap.put(uuid,imagenEncode);
+            bufferMap.put(uuid, imagenEncode);
 
         }
         return imagenEncode;
@@ -283,7 +273,7 @@ public class CmsServiceImpl implements CmsService {
         //----Componentes
 
         List<NavigationElement> nodesComponentsList = nodeProcedure.getChildren();
-        if(nodesComponentsList != null){
+        if (nodesComponentsList != null) {
             for (NavigationElement nodeComponent : nodesComponentsList) {
                 JSONObject componentObject = new JSONObject();
                 Boolean flag = Boolean.TRUE;
@@ -332,9 +322,6 @@ public class CmsServiceImpl implements CmsService {
         }
 
 
-
-
-
         return new JSONArray(arrayComponentJson);
     }
 
@@ -357,16 +344,6 @@ public class CmsServiceImpl implements CmsService {
 
     private NodeListResponse getChildNode(String uuid) {
         NodeListResponse childNodesList = getRestClient().findNodeChildren(APP_NAME, uuid, new NodeParametersImpl().setLanguages("en")).blockingGet();
-        /*for (NodeResponse nodeResponse : childNodesList.getData()) {
-         System.out.println(nodeResponse.getUuid());
-         FieldMap map = nodeResponse.getFields();
-         Iterator<String> it = map.keySet().iterator();
-         while (it.hasNext()) {
-            String clave = (String) it.next();
-         }
-         if(nodeResponse.getFields().getStringField(ATTR_TITULO)!=null)
-            System.out.println(nodeResponse.getFields().getStringField(ATTR_TITULO).getString());
-      }*/
         return childNodesList;
 
     }
