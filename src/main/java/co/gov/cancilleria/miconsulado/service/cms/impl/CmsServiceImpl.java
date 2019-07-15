@@ -2,18 +2,16 @@ package co.gov.cancilleria.miconsulado.service.cms.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -24,21 +22,15 @@ import com.gentics.mesh.core.rest.node.NodeListResponse;
 import com.gentics.mesh.core.rest.node.field.NodeField;
 import com.gentics.mesh.core.rest.node.field.NodeFieldListItem;
 import com.gentics.mesh.core.rest.node.field.list.NodeFieldList;
-import com.gentics.mesh.parameter.client.NavigationParametersImpl;
-import com.gentics.mesh.parameter.client.NodeParametersImpl;
-import com.gentics.mesh.rest.client.MeshBinaryResponse;
-import com.gentics.mesh.rest.client.MeshRestClient;
 
-import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
 import co.gov.cancilleria.miconsulado.service.cms.CmsService;
+import co.gov.cancilleria.miconsulado.utils.EncodeImageUtil;
 
 @Service
+@Scope("prototype")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@EnableConfigurationProperties(value = ApplicationProperties.class)
 public class CmsServiceImpl implements CmsService {
-	private int maxDepth;
 
-	static final String APP_NAME = "miConsulado";
 	static final String ATTR_UUID = "uuid";
 	static final String ATTR_IMAGEN = "imagen";
 	static final String ATTR_CONTENT = "contenido";
@@ -54,42 +46,24 @@ public class CmsServiceImpl implements CmsService {
 	static final String ATTR_COLOR_BACKGROUND = "colorFondo";
 	static final String ATTR_ICON = "icono";
 	static final String ATTR_ACCORDION = "acordeon";
-	static final String ATTR_TITLE = "titulo";
-
-	@Autowired
-	private ApplicationProperties appProperties;
+	
+	private GetMeshService clientCms;
 
 	private LinkedList<JSONObject> listProceduresJson;
 
 	Map<String, String> bufferMap = new HashMap<String, String>();
 
-	public void setConfiguration(ApplicationProperties properties) {
-		this.appProperties = properties;
-	}
+	@Autowired
+	public CmsServiceImpl(GetMeshService clientCms) {
+		super();
+		this.clientCms = clientCms;
+	}	
+	
 
-	public int getMaxDepth() {
-		return maxDepth;
-	}
-
-	public void setMaxDepth(int maxDepth) {
-		this.maxDepth = maxDepth;
-	}
-
-	private MeshRestClient getRestClient() {
-		MeshRestClient client = MeshRestClient.create(appProperties.getCms().getHost(),
-				appProperties.getCms().getPort(), appProperties.getCms().isHttps());
-		client.setLogin(System.getenv(appProperties.getCms().getUser()),
-				System.getenv(appProperties.getCms().getPassword()));
-		client.login().ignoreElement().blockingAwait();
-
-		return client;
-	}
-
-	private JSONObject getNavRoot() throws JSONException, IOException {
+	public JSONObject getCmsNavRoot(int maxDepth) throws JSONException, IOException {
 
 		// Consulta el CMS
-		NavigationResponse navRoot = getRestClient()
-				.navroot(APP_NAME, "/", new NavigationParametersImpl().setIncludeAll(true)).blockingGet();
+		NavigationResponse navRoot = clientCms.getNavigation();
 
 		// Estructura para el Front-End
 		JSONObject structureFrontJson = new JSONObject();
@@ -124,6 +98,8 @@ public class CmsServiceImpl implements CmsService {
 
 		return structureFrontJson;
 	}
+
+	
 
 	private void buildResources(JSONObject structureFrontJson, NavigationElement node)
 			throws JSONException, IOException {
@@ -175,15 +151,8 @@ public class CmsServiceImpl implements CmsService {
 		if (bufferMap.containsKey(uuid)) {
 			imagenEncode = bufferMap.get(uuid);
 		} else {
-
-			MeshBinaryResponse binary = getRestClient()
-					.downloadBinaryField(APP_NAME, uuid, null, ATTR_IMAGEN, new NodeParametersImpl().setLanguages("en"))
-					.blockingGet();
-			byte[] bytes = IOUtils.toByteArray(binary.getStream());
-			Base64.Encoder encoder = Base64.getEncoder();
-			imagenEncode = encoder.encodeToString(bytes);
+			imagenEncode = EncodeImageUtil.getBase64ImageResource(clientCms.downloadBinaryField(uuid));
 			bufferMap.put(uuid, imagenEncode);
-
 		}
 		return imagenEncode;
 	}
@@ -251,8 +220,9 @@ public class CmsServiceImpl implements CmsService {
 					}
 
 				}
-
-				arrayComponentJson[arrayOrderComponents.indexOf(nodeComponent.getUuid())] = componentObject;
+				
+				if(arrayOrderComponents.indexOf(nodeComponent.getUuid())>0)
+						arrayComponentJson[arrayOrderComponents.indexOf(nodeComponent.getUuid())] = componentObject;
 
 				if (!nodeComponent.getNode().getChildrenInfo().isEmpty() && flag) {
 					buildProcedures(nodeComponent);
@@ -281,18 +251,13 @@ public class CmsServiceImpl implements CmsService {
 	}
 
 	private NodeListResponse getAllNodes() {
-		NodeListResponse nodes = getRestClient().findNodes(APP_NAME, new NodeParametersImpl().setLanguages("en"))
-				.blockingGet();
+		NodeListResponse nodes = clientCms.findNodes();
 		return nodes;
 	}
 
 	public String getAllCmsNodes() {
 		NodeListResponse cmsNodes = this.getAllNodes();
 		return cmsNodes.toJson();
-	}
-
-	public JSONObject getCmsNavRoot() throws JSONException, IOException {
-		return this.getNavRoot();
 	}
 
 }

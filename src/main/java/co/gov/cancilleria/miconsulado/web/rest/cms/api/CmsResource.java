@@ -1,6 +1,8 @@
 package co.gov.cancilleria.miconsulado.web.rest.cms.api;
 
 import co.gov.cancilleria.miconsulado.service.cms.CmsService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,7 @@ public class CmsResource {
 
     private final CmsService cmsService;
 
+    @Autowired
     CmsResource(CmsService cmsService) {
         this.cmsService = cmsService;
     }
@@ -37,8 +40,8 @@ public class CmsResource {
      */
     @GetMapping(value = "/navigation", produces = "application/json")
     public String getNavRootCms() throws JSONException, IOException {
-        cmsService.setMaxDepth(20);
-        return cmsService.getCmsNavRoot().toString();
+        //cmsService.setMaxDepth(20);
+        return cmsService.getCmsNavRoot(20).toString();
     }
 
 

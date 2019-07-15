@@ -8,26 +8,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
 import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 
 @SpringBootTest(classes = MiconsuladogatewayApp.class)
+@ContextConfiguration(initializers = ConfigFileApplicationContextInitializer.class)
 class CmsResourceIT {
-    @Autowired
-    private CmsService cmsService;
-
-    @Autowired
-    private ApplicationProperties appProperties;
+	@Autowired
+    CmsService cmsService;
 
     CmsResource cmsResource;
 
     @BeforeEach
     public void setup() {
-        cmsService.setConfiguration(appProperties);
-        cmsService.setMaxDepth(20);
         cmsResource = new CmsResource(cmsService);
     }
 

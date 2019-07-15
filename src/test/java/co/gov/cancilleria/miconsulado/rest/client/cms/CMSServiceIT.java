@@ -14,9 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
 import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 import co.gov.cancilleria.miconsulado.service.cms.impl.CmsServiceImpl;
+import co.gov.cancilleria.miconsulado.service.cms.impl.GetMeshService;
 
 
 @SpringBootTest(classes = {MiconsuladogatewayApp.class})
@@ -25,20 +25,17 @@ class CMSServiceIT {
 	private CmsService restClient;
 	
 	@Autowired
-	private ApplicationProperties appProperties;
+	private GetMeshService serviceGetMesh;
 	
 	@BeforeEach
     public void init() {
-        restClient = new CmsServiceImpl();
-        restClient.setConfiguration(appProperties);
-        
+        restClient = new CmsServiceImpl(serviceGetMesh);        
 	}
 	
 	
 	@Test
 	void testNavigationRootCMSService() throws JSONException, IOException {
-		restClient.setMaxDepth(20);
-        JSONObject info = restClient.getCmsNavRoot();
+        JSONObject info = restClient.getCmsNavRoot(20);
 		assertThat(info).isNotNull();
 	}
 
