@@ -36,6 +36,7 @@ public class CacheConfiguration {
         return cm -> {
             createCache(cm, co.gov.cancilleria.miconsulado.repository.UserRepository.USERS_BY_LOGIN_CACHE);
             createCache(cm, co.gov.cancilleria.miconsulado.repository.UserRepository.USERS_BY_EMAIL_CACHE);
+            createCache(cm, co.gov.cancilleria.miconsulado.service.cms.CmsService.IMAGE_RESOURCE_CMS_BY_UUID_CACHE);
             // jhipster-needle-ehcache-add-entry
         };
     }

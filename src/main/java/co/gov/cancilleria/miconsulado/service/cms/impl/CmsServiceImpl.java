@@ -2,15 +2,16 @@ package co.gov.cancilleria.miconsulado.service.cms.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -30,28 +31,14 @@ import co.gov.cancilleria.miconsulado.utils.EncodeImageUtil;
 @Scope("prototype")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CmsServiceImpl implements CmsService {
-
-	static final String ATTR_UUID = "uuid";
-	static final String ATTR_IMAGEN = "imagen";
-	static final String ATTR_CONTENT = "contenido";
-	static final String ATTR_RESOURCES = "recursos";
-	static final String ATTR_PROCEDURES = "procedimientos";
-	static final String ATTR_NAME = "nombre";
-	static final String ATTR_ORDER_COMP = "ordenComponentes";
-	static final String ATTR_COMPONENTS = "componentes";
-	static final String ATTR_PROC_COSTS = "procedimientoCostos";
-	static final String ATTR_ITEM_MENU = "itemMenu";
-	static final String ATTR_UUID_VIEW = "uuidVista";
-	static final String ATTR_TYPE_SQUEMA = "tipoEsquema";
-	static final String ATTR_COLOR_BACKGROUND = "colorFondo";
-	static final String ATTR_ICON = "icono";
-	static final String ATTR_ACCORDION = "acordeon";
+	
+	private final static Logger log = LoggerFactory.getLogger(CmsService.class);
 	
 	private GetMeshService clientCms;
 
 	private LinkedList<JSONObject> listProceduresJson;
 
-	Map<String, String> bufferMap = new HashMap<String, String>();
+	//Map<String, String> bufferMap = new HashMap<String, String>();
 
 	@Autowired
 	public CmsServiceImpl(GetMeshService clientCms) {
@@ -146,15 +133,11 @@ public class CmsServiceImpl implements CmsService {
 
 	}
 
+	@Cacheable(value = IMAGE_RESOURCE_CMS_BY_UUID_CACHE, key = "#uuid", condition = "#result != null")
 	public String getBase64ImageResource(String uuid) throws IOException {
-		String imagenEncode = "";
-		if (bufferMap.containsKey(uuid)) {
-			imagenEncode = bufferMap.get(uuid);
-		} else {
-			imagenEncode = EncodeImageUtil.getBase64ImageResource(clientCms.downloadBinaryField(uuid));
-			bufferMap.put(uuid, imagenEncode);
-		}
-		return imagenEncode;
+		String imageEncode = EncodeImageUtil.getBase64ImageResource(clientCms.downloadBinaryField(uuid));
+		log.info("Image resource id {} and value {}", uuid, imageEncode);
+		return imageEncode;
 	}
 
 	private void buildProcedures(NavigationElement nodeProcedure) throws JSONException {
