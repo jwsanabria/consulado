@@ -11,4 +11,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
 
+	CmsProperties cms;
+
+	public CmsProperties getCms() {
+		return cms;
+	}
+
+	public void setCms(CmsProperties cms) {
+		this.cms = cms;
+	}
+	
+
+	@Override
+	public String toString() {
+		return "ApplicationProperties [cms=" + cms +  "]";
+	}
+	
+	
+	
 }

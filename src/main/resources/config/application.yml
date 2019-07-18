@@ -168,5 +168,10 @@ jhipster:
 # More documentation is available at:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
-
-# application:
+application:
+  cms:
+    user: MICONSULADO_CMS_USER
+    password: MICONSULADO_CMS_PASS
+    host: 'vps206188.vps.ovh.ca'
+    port: 8080
+    https: false
