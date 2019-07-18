@@ -21,7 +21,7 @@ public interface CmsService {
 	static final String ATTR_COLOR_BACKGROUND = "colorFondo";
 	static final String ATTR_ICON = "icono";
 	static final String ATTR_ACCORDION = "acordeon";
-	static final String IMAGE_RESOURCE_CMS_BY_UUID_CACHE = "cms.image.resources";
+
 	
 	String getAllCmsNodes();
 
