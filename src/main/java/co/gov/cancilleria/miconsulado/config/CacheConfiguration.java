@@ -12,14 +12,23 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 
+import javax.cache.configuration.FactoryBuilder;
+import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
+
 @Configuration
 @EnableCaching
 public class CacheConfiguration {
 
     private final javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration;
+    
+    private final javax.cache.configuration.CacheEntryListenerConfiguration<Object, Object> jcacheEntryListenerConfiguration;
 
     public CacheConfiguration(JHipsterProperties jHipsterProperties) {
         JHipsterProperties.Cache.Ehcache ehcache = jHipsterProperties.getCache().getEhcache();
+        
+        jcacheEntryListenerConfiguration = new MutableCacheEntryListenerConfiguration<>(
+                FactoryBuilder.factoryOf(CacheEventLogger.class), null, false, false);
+        
         jcacheConfiguration = Eh107Configuration.fromEhcacheCacheConfiguration(
             CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class,
                 ResourcePoolsBuilder.heap(ehcache.getMaxEntries()))
@@ -43,6 +52,6 @@ public class CacheConfiguration {
         if (cache != null) {
             cm.destroyCache(cacheName);
         }
-        cm.createCache(cacheName, jcacheConfiguration);
+        cm.createCache(cacheName, jcacheConfiguration).registerCacheEntryListener(jcacheEntryListenerConfiguration);
     }
 }

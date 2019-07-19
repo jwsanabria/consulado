@@ -6,8 +6,6 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
@@ -40,10 +38,7 @@ class CmsResourceIT {
     @Test
     void testGetNavRootCms() throws JSONException, IOException {
         String response = cmsResource.getNavRootCms();
-        //Logger log = LoggerFactory.getLogger(CmsService.class);
-        //log.info(response);
         assertThat(response).isNotNull();
-        System.out.println(response);
     }
 
 }

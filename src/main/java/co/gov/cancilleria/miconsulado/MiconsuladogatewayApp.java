@@ -17,11 +17,12 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.core.env.Environment;
 
 import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
+import co.gov.cancilleria.miconsulado.config.CacheConfiguration;
 import co.gov.cancilleria.miconsulado.config.DefaultProfileUtil;
 import io.github.jhipster.config.JHipsterConstants;
 
 @SpringBootApplication
-@EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })
+@EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class})
 @EnableDiscoveryClient
 public class MiconsuladogatewayApp implements InitializingBean {
 
