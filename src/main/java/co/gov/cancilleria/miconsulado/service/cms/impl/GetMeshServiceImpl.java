@@ -1,23 +1,23 @@
 package co.gov.cancilleria.miconsulado.service.cms.impl;
 
-import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
-import co.gov.cancilleria.miconsulado.service.cms.GetMeshService;
-import co.gov.cancilleria.miconsulado.utils.EncodeImageUtil;
-import com.gentics.mesh.core.rest.navigation.NavigationResponse;
-import com.gentics.mesh.core.rest.node.NodeListResponse;
-import com.gentics.mesh.parameter.client.NavigationParametersImpl;
-import com.gentics.mesh.parameter.client.NodeParametersImpl;
-import com.gentics.mesh.rest.client.MeshBinaryResponse;
-import com.gentics.mesh.rest.client.MeshRestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import com.gentics.mesh.core.rest.navigation.NavigationResponse;
+import com.gentics.mesh.core.rest.node.NodeListResponse;
+import com.gentics.mesh.parameter.client.NavigationParametersImpl;
+import com.gentics.mesh.parameter.client.NodeParametersImpl;
+import com.gentics.mesh.rest.client.MeshBinaryResponse;
+import com.gentics.mesh.rest.client.MeshRestClient;
+
+import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
+import co.gov.cancilleria.miconsulado.service.cms.GetMeshService;
+import co.gov.cancilleria.miconsulado.utils.EncodeImageUtil;
 
 @Service
 @Scope("prototype")
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class GetMeshServiceImpl implements GetMeshService {
 
 
-    private final static Logger log = LoggerFactory.getLogger(co.gov.cancilleria.miconsulado.service.cms.GetMeshService.class);
+    //private final static Logger log = LoggerFactory.getLogger(co.gov.cancilleria.miconsulado.service.cms.GetMeshService.class);
 
     private ApplicationProperties appProperties;
 
@@ -79,9 +79,7 @@ public class GetMeshServiceImpl implements GetMeshService {
 
     public String getBase64ImageResource(String uuid) throws IOException {
 
-        String imageEncode = EncodeImageUtil.getBase64ImageResource(downloadBinaryField(uuid));
-        // log.info("Image resource id {} and value {}", uuid, imageEncode);
-        return imageEncode;
+        return EncodeImageUtil.getBase64ImageResource(downloadBinaryField(uuid));
     }
 
 

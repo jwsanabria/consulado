@@ -40,7 +40,6 @@ public class CmsResource {
      */
     @GetMapping(value = "/navigation", produces = "application/json")
     public String getNavRootCms() throws JSONException, IOException {
-        //cmsService.setMaxDepth(20);
         return cmsService.getCmsNavRoot(20).toString();
     }
 
