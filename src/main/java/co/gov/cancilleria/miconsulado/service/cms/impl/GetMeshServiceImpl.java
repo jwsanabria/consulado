@@ -1,26 +1,21 @@
 package co.gov.cancilleria.miconsulado.service.cms.impl;
 
+import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
 import co.gov.cancilleria.miconsulado.service.cms.GetMeshService;
 import co.gov.cancilleria.miconsulado.utils.EncodeImageUtil;
-import org.ehcache.Cache;
-import org.ehcache.CacheManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
 import com.gentics.mesh.core.rest.navigation.NavigationResponse;
 import com.gentics.mesh.core.rest.node.NodeListResponse;
 import com.gentics.mesh.parameter.client.NavigationParametersImpl;
 import com.gentics.mesh.parameter.client.NodeParametersImpl;
 import com.gentics.mesh.rest.client.MeshBinaryResponse;
 import com.gentics.mesh.rest.client.MeshRestClient;
-
-import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
@@ -64,6 +59,7 @@ public class GetMeshServiceImpl implements GetMeshService {
         closeConnection();
         return response;
     }
+
 
     public MeshBinaryResponse downloadBinaryField(String uuid) {
         createConnection();

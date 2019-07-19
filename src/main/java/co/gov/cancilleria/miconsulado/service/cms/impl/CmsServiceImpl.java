@@ -83,7 +83,6 @@ public class CmsServiceImpl implements CmsService {
         return structureFrontJson;
     }
 
-
     private void buildResources(JSONObject structureFrontJson, NavigationElement node)
         throws JSONException, IOException {
         // Se iteran los Recursos
