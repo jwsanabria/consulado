@@ -21,9 +21,8 @@ import java.io.IOException;
 
 @Service
 @Scope("prototype")
-@EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })
+@EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
 public class GetMeshServiceImpl implements GetMeshService {
-
 
 
     private final static Logger log = LoggerFactory.getLogger(co.gov.cancilleria.miconsulado.service.cms.GetMeshService.class);
@@ -63,7 +62,8 @@ public class GetMeshServiceImpl implements GetMeshService {
 
     public MeshBinaryResponse downloadBinaryField(String uuid) {
         createConnection();
-        MeshBinaryResponse response = client.downloadBinaryField(APP_NAME, uuid, null, ATTR_IMAGEN, new NodeParametersImpl().setLanguages("en"))
+        //new NodeParametersImpl().setLanguages("en")
+        MeshBinaryResponse response = client.downloadBinaryField(APP_NAME, uuid, null, ATTR_IMAGEN, new NodeParametersImpl())
             .blockingGet();
         closeConnection();
         return response;
@@ -80,7 +80,7 @@ public class GetMeshServiceImpl implements GetMeshService {
     public String getBase64ImageResource(String uuid) throws IOException {
 
         String imageEncode = EncodeImageUtil.getBase64ImageResource(downloadBinaryField(uuid));
-       // log.info("Image resource id {} and value {}", uuid, imageEncode);
+        // log.info("Image resource id {} and value {}", uuid, imageEncode);
         return imageEncode;
     }
 
