@@ -152,8 +152,6 @@ public class CmsServiceImpl implements CmsService {
         JSONObject[] arrayComponentJson = new JSONObject[arrayOrderComponents.size()];
 
         //-- Se crear al Array de Componentes ItemMenu
-
-        //JSONArray arrayItemMenuJson = new JSONArray();
         JSONObject[] arrayItemMenuJson = new JSONObject[arrayOrderComponents.size()];
 
 
@@ -265,27 +263,42 @@ public class CmsServiceImpl implements CmsService {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         menuObject.put(ATTR_UUID, uuid);
         menuObject.put(ATTR_TYPE_SQUEMA, "menu");
-        menuObject.put(ATTR_COMPONENTS, removeNullsFrom(new JSONArray(arrayItemsMenuJson)));
+        JSONArray menuItemsArray = removeNullsFrom(new JSONArray(arrayItemsMenuJson));
+        menuObject.put(ATTR_COMPONENTS, menuItemsArray);
 
         //--  Cambia los componentes
-        JSONObject[] arrayComponentMenuJson = new JSONObject[2];
-        arrayComponentMenuJson[0] = arrayComponentJson[0];
-        arrayComponentMenuJson[1] = menuObject;
+        int sizeArray = (arrayComponentJson.length - menuItemsArray.length()) + 1;
+        JSONObject[] arrayComponentMenuJson = new JSONObject[sizeArray];
+
+
+        for (int i = 0; i < arrayComponentMenuJson.length; i++) {
+            if (i == 1) {
+                arrayComponentMenuJson[i] = menuObject;
+            } else {
+                arrayComponentMenuJson[i] = arrayComponentJson[i];
+            }
+
+        }
+
 
         return new JSONArray(arrayComponentMenuJson);
     }
 
 
     private JSONArray removeNullsFrom(JSONArray array) throws JSONException {
+        JSONArray arrayRemove = new JSONArray();
         if (array != null) {
             for (int i = 0; i < array.length(); i++) {
                 Object o = array.get(i);
-                if (o == null || o == JSONObject.NULL) {
-                    array.remove(i);
+                if (!(o == null || o == JSONObject.NULL)) {
+                    arrayRemove.put(array.get(i));
+                    // array.remove(i);
                 }
             }
         }
-        return array;
+
+
+        return arrayRemove;
     }
 
 
