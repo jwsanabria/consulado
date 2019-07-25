@@ -1,10 +1,5 @@
 package co.gov.cancilleria.miconsulado.config;
 
-import co.gov.cancilleria.miconsulado.security.*;
-import co.gov.cancilleria.miconsulado.security.jwt.*;
-
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
@@ -19,6 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
+
+import co.gov.cancilleria.miconsulado.security.AuthoritiesConstants;
+import co.gov.cancilleria.miconsulado.security.jwt.JWTConfigurer;
+import co.gov.cancilleria.miconsulado.security.jwt.TokenProvider;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)

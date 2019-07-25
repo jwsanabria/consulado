@@ -204,7 +204,7 @@ public class LoggingConfiguration {
         metricsFilter.setOnMatch(FilterReply.DENY);
         metricsFilter.start();
 
-        context.getLoggerList().forEach((logger) -> {
+        context.getLoggerList().forEach(logger -> {
             for (Iterator<Appender<ILoggingEvent>> it = logger.iteratorForAppenders(); it.hasNext();) {
                 Appender<ILoggingEvent> appender = it.next();
                 if (!appender.getName().equals(ASYNC_LOGSTASH_APPENDER_NAME)

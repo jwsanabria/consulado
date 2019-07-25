@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
 import co.gov.cancilleria.miconsulado.service.cms.CmsService;
 import co.gov.cancilleria.miconsulado.service.cms.impl.CmsServiceImpl;
-import co.gov.cancilleria.miconsulado.service.cms.impl.GetMeshService;
+import co.gov.cancilleria.miconsulado.service.cms.GetMeshService;
 
 
 @SpringBootTest(classes = {MiconsuladogatewayApp.class})
