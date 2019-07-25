@@ -122,8 +122,8 @@ jhipster:
 
 application:
   cms:
-      user: ${MICONSULADO_CMS_USER}
-      password: ${MICONSULADO_CMS_PASS}
-      host: ${MICONSULADO_CMS_HOST}
+    user: admin
+    password: admin
+    host: '192.168.1.43'
     port: 8080
     https: false

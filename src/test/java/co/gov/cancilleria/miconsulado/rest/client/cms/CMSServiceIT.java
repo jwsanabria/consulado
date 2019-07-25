@@ -1,10 +1,11 @@
 package co.gov.cancilleria.miconsulado.rest.client.cms;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-
+import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
+import co.gov.cancilleria.miconsulado.service.cms.CmsService;
+import co.gov.cancilleria.miconsulado.service.cms.GetMeshService;
+import co.gov.cancilleria.miconsulado.service.cms.impl.CmsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -13,10 +14,9 @@ import org.springframework.boot.test.context.ConfigFileApplicationContextInitial
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.service.cms.CmsService;
-import co.gov.cancilleria.miconsulado.service.cms.impl.CmsServiceImpl;
-import co.gov.cancilleria.miconsulado.service.cms.GetMeshService;
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest(classes = {MiconsuladogatewayApp.class})
@@ -34,6 +34,7 @@ class CMSServiceIT {
 	
 	
 	@Test
+    @Disabled
 	void testNavigationRootCMSService() throws JSONException, IOException {
         JSONObject info = restClient.getCmsNavRoot(20);
 		assertThat(info).isNotNull();
