@@ -2,9 +2,7 @@ package co.gov.cancilleria.miconsulado;
 
 import co.gov.cancilleria.miconsulado.config.ApplicationProperties;
 import co.gov.cancilleria.miconsulado.config.DefaultProfileUtil;
-
 import io.github.jhipster.config.JHipsterConstants;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

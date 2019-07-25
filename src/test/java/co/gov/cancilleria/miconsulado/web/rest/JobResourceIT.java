@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -60,7 +61,8 @@ public class JobResourceIT {
     @Autowired
     private ExceptionTranslator exceptionTranslator;
 
-    @Autowired
+    @Autowired()
+    @Qualifier("defaultEntityManagerFactory")
     private EntityManager em;
 
     @Autowired

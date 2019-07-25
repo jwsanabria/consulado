@@ -1,5 +1,6 @@
 package co.gov.cancilleria.miconsulado.config;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,7 +13,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
@@ -20,12 +23,13 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@EnableJpaRepositories(value = "co.gov.cancilleria.miconsulado.repository.main")
 @EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
+@EnableJpaRepositories(basePackages = "co.gov.cancilleria.miconsulado.repository.main", entityManagerFactoryRef = "defaultEntityManagerFactory", transactionManagerRef = "defaultTransactionManager")
 @EnableTransactionManagement
 public class DatabaseConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
+
 
     @Bean
     @Primary
@@ -38,34 +42,36 @@ public class DatabaseConfiguration {
     @Primary
     @ConfigurationProperties("spring.datasource")
     public DataSource defaultDataSource() {
-        return defaultDataSourceProperties().initializeDataSourceBuilder().build();
+        return defaultDataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
-    @Bean("mdsJpaProperties")
+    @Bean
     @ConfigurationProperties("spring.jpa")
     public Properties defaultJpaProperties() {
         return new Properties();
     }
 
-    @Bean(name = "entityManagerFactory")
+    @Bean
     @Primary
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-        EntityManagerFactoryBuilder builder) {
+    public LocalContainerEntityManagerFactoryBean defaultEntityManagerFactory(
+        EntityManagerFactoryBuilder builder, DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean emf = builder
-            .dataSource(defaultDataSource())
+            .dataSource(dataSource)
             .packages("co.gov.cancilleria.miconsulado.domain.main")
             .persistenceUnit("default")
             .build();
-        emf.setJpaProperties(defaultJpaProperties());
 
+        JpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+        emf.setJpaVendorAdapter(jpaVendorAdapter);
+        emf.setJpaProperties(defaultJpaProperties());
         return emf;
     }
 
-    @Bean(name = "transactionManager")
+    @Bean
     @Primary
-    public JpaTransactionManager transactionManager(@Qualifier("entityManagerFactory") final EntityManagerFactory emf) {
+    public JpaTransactionManager defaultTransactionManager(@Qualifier("defaultEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
         return transactionManager;
     }
 }

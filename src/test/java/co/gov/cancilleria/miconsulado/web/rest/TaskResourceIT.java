@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
@@ -55,6 +56,7 @@ public class TaskResourceIT {
     private ExceptionTranslator exceptionTranslator;
 
     @Autowired
+    @Qualifier("defaultEntityManagerFactory")
     private EntityManager em;
 
     @Autowired

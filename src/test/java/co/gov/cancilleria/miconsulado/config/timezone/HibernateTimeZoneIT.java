@@ -1,7 +1,7 @@
 package co.gov.cancilleria.miconsulado.config.timezone;
 
 import co.gov.cancilleria.miconsulado.MiconsuladogatewayApp;
-import co.gov.cancilleria.miconsulado.repository.main.timezone.DateTimeWrapper;
+import co.gov.cancilleria.miconsulado.domain.main.DateTimeWrapper;
 import co.gov.cancilleria.miconsulado.repository.main.timezone.DateTimeWrapperRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

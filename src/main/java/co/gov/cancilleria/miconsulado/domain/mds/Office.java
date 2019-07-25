@@ -4,6 +4,7 @@ package co.gov.cancilleria.miconsulado.domain.mds;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,98 +24,116 @@ public class Office implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty(value = "The name attribute.")
+    @Nationalized
     @Column(name = "[Nombre Largo SITAC]")
     private String name;
 
     @ApiModelProperty(value = "The country attribute.")
+    @Nationalized
     @Column(name = "Pais")
     private String country;
 
     @ApiModelProperty(value = "The address attribute.")
+    @Nationalized
     @Column(name = "Dirección")
     private String address;
 
     @ApiModelProperty(value = "The opening hours attribute.")
+    @Nationalized
     @Column(name = "[Horario atención]")
     private String openingHours;
 
     @ApiModelProperty(value = "The email attribute.")
+    @Nationalized
     @Column(name = "Email")
     private String email;
 
     @ApiModelProperty(value = "The phone 1 attribute.")
+    @Nationalized
     @Column(name = "Teléfono")
     private String phone1;
 
     @ApiModelProperty(value = "The phone 2 attribute.")
+    @Nationalized
     @Column(name = "[Teléfono 2]")
     private String phone2;
 
     @ApiModelProperty(value = "The emergency phone attribute.")
+    @Nationalized
     @Column(name = "[Télefono emergencia]")
     private String emergencyPhone;
 
     @ApiModelProperty(value = "The latitude attribute.")
-    @Column(name = "Latitud")
+    @Column(name = "Latitud", columnDefinition = "decimal", precision = 18, scale = 3)
     private Double latitude;
 
     @ApiModelProperty(value = "The longitude attribute.")
-    @Column(name = "Longitud")
+    @Column(name = "Longitud", columnDefinition = "decimal", precision = 18, scale = 3)
     private Double longitude;
 
     @ApiModelProperty(value = "The site URL attribute.")
+    @Nationalized
     @Column(name = "[URL Oficina]")
     private String siteUrl;
 
     @ApiModelProperty(value = "The facebook WEB URL attribute.")
+    @Nationalized
     @Column(name = "[url facebook]")
     private String facebookWebUrl;
 
     @ApiModelProperty(value = "The twitter WEB URL attribute.")
+    @Nationalized
     @Column(name = "[url twitter]")
     private String twitterWebUrl;
 
     @ApiModelProperty(value = "The instagram WEB URL attribute.")
+    @Nationalized
     @Column(name = "[url instagram]")
     private String instagramWebUrl;
 
     @ApiModelProperty(value = "The facebook APP URL attribute.")
+    @Nationalized
     @Column(name = "[url facebook app]")
     private String facebookAppUrl;
 
     @ApiModelProperty(value = "The twitter APP URL attribute.")
+    @Nationalized
     @Column(name = "[url twitter app]")
     private String twitterAppUrl;
 
     @ApiModelProperty(value = "The instagram APP URL attribute.")
+    @Nationalized
     @Column(name = "[url instagram app]")
     private String instagramAppUrl;
 
     @ApiModelProperty(value = "The consul name attribute.")
+    @Nationalized
     @Column(name = "[VersionFlag]")
     private String consulName;
 
     @JsonIgnore
+    @Nationalized
     @Column(name = "[Atención Ciudadano_Code]")
-    private Integer citizenAttentionCode;
+    private String citizenAttentionCode;
 
     @JsonIgnore
+    @Nationalized
     @Column(name = "Estado")
-    private Integer status;
+    private String status;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 
     /**
      * The id attribute.
      */
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

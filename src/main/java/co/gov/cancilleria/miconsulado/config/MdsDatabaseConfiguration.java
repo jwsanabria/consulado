@@ -11,7 +11,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
@@ -36,7 +38,7 @@ public class MdsDatabaseConfiguration {
     @Bean("mdsDataSource")
     @ConfigurationProperties("mds.datasource")
     public DataSource mdsDataSource() {
-        return mdsDataSourceProperties().initializeDataSourceBuilder().build();
+        return mdsDataSourceProperties().initializeDataSourceBuilder()/*.type(HikariDataSource.class)*/.build();
     }
 
     @Bean("mdsJpaProperties")
@@ -56,6 +58,9 @@ public class MdsDatabaseConfiguration {
             .packages("co.gov.cancilleria.miconsulado.domain.mds")
             .persistenceUnit("mds")
             .build();
+
+        JpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+        emf.setJpaVendorAdapter(jpaVendorAdapter);
         emf.setJpaProperties(properties);
 
         return emf;

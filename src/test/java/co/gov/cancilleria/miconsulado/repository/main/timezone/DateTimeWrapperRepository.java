@@ -1,5 +1,6 @@
 package co.gov.cancilleria.miconsulado.repository.main.timezone;
 
+import co.gov.cancilleria.miconsulado.domain.main.DateTimeWrapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

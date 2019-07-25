@@ -24,6 +24,7 @@ spring:
   application:
     name: miconsuladogateway
   datasource:
+      autocommit: false
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:h2:mem:miconsuladogateway;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     name:
@@ -121,3 +122,56 @@ jhipster:
 # ===================================================================
 
 # application:
+#mds:
+#  datasource:
+#    type: com.zaxxer.hikari.HikariDataSource
+#    url: jdbc:h2:mem:mds_cancilleria;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    name:
+#    username:
+#    password:
+#    hikari:
+#      auto-commit: false
+#    jpa:
+#      database-platform: io.github.jhipster.domain.util.FixedH2Dialect
+#      database: H2
+#      open-in-view: false
+#      show-sql: false
+#      hibernate:
+#        ddl-auto: none
+#        naming:
+#          physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+#          implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+#      properties:
+#        hibernate.id.new_generator_mappings: true
+#        hibernate.connection.provider_disables_autocommit: true
+#        hibernate.cache.use_second_level_cache: false
+#        hibernate.cache.use_query_cache: false
+#        hibernate.generate_statistics: false
+#        hibernate.hbm2ddl.auto: none
+#        hibernate.jdbc.time_zone: UTC
+
+mds:
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        databaseName:
+        serverName:
+        url: jdbc:sqlserver://172.20.18.152\DW2017;databaseName=MDS
+        username: CRM_MDS
+        password: $3h4ARCwayKVN_4N
+        autocommit: false
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+
+    jpa:
+        database-platform: org.hibernate.dialect.SQLServer2012Dialect
+        database: SQL_SERVER
+        openInView: false
+        show_sql: true
+        generate-ddl: false
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.SQLServer2012Dialect
+                naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy

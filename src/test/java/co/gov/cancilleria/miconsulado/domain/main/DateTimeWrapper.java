@@ -1,4 +1,4 @@
-package co.gov.cancilleria.miconsulado.repository.main.timezone;
+package co.gov.cancilleria.miconsulado.domain.main;
 
 import javax.persistence.*;
 import java.io.Serializable;

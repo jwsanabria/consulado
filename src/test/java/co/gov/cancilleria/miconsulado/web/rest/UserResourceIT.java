@@ -15,6 +15,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
@@ -87,6 +88,7 @@ public class UserResourceIT {
     private ExceptionTranslator exceptionTranslator;
 
     @Autowired
+    @Qualifier("defaultEntityManagerFactory")
     private EntityManager em;
 
     private MockMvc restUserMockMvc;
