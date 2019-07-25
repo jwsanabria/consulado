@@ -9,6 +9,10 @@ import com.gentics.mesh.rest.client.MeshBinaryResponse;
 
 public class EncodeImageUtil {
 	
+	private EncodeImageUtil() {
+	    throw new IllegalStateException("Utility class");
+	}
+	
 	public static String getBase64ImageResource(MeshBinaryResponse binary) throws IOException {
 		String imagenEncode = "";
 		

@@ -18,7 +18,7 @@
     "prodDatabaseType": "postgresql",
     "searchEngine": false,
     "messageBroker": false,
-    "serviceDiscoveryType": "eureka",
+    "serviceDiscoveryType": false,
     "buildTool": "maven",
     "enableSwaggerCodegen": true,
     "jwtSecretKey": "M2NhODA0Njc5YjZkOGFiODJhZDAyN2FjZmNmMTU2MDYxY2E4N2IyMjFhODBhNmVkNmE1Mzg5MTE1YzRkYzYxNTc4YTRlZDliMDk2OWMzNTRlYWRmZmM3MTM3MDM1MzE1M2M1NGRiZDQ4MzFjZjU4YTZkNGRlYTU5MDA3MjQ0MTM=",

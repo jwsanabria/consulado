@@ -21,7 +21,7 @@ import co.gov.cancilleria.miconsulado.config.DefaultProfileUtil;
 import io.github.jhipster.config.JHipsterConstants;
 
 @SpringBootApplication
-@EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })
+@EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class})
 @EnableDiscoveryClient
 public class MiconsuladogatewayApp implements InitializingBean {
 
