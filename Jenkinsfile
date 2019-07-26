@@ -49,7 +49,7 @@ node {
         }
         stage('quality analysis') {
             withSonarQubeEnv('sonar') {
-                sh "./mvnw sonar:sonar"
+                sh "./mvnw initialize sonar:sonar"
             }
         }
     }
